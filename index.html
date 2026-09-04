@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jewellery CAD V1</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:#111318;
+  color:white;
+  font-family:Arial,sans-serif;
+  overflow:hidden;
+}
+header{
+  height:60px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 16px;
+  background:#191c24;
+  border-bottom:1px solid #333;
+}
+header h2{margin:0;font-size:20px}
+#viewer{
+  width:100vw;
+  height:calc(100vh - 60px);
+}
+.panel{
+  position:fixed;
+  left:12px;
+  top:72px;
+  width:210px;
+  padding:15px;
+  background:rgba(25,28,36,.94);
+  border:1px solid #444;
+  border-radius:14px;
+  z-index:10;
+}
+.panel h3{margin:0 0 14px}
+label{
+  display:block;
+  font-size:13px;
+  margin-top:12px;
+  color:#bbb;
+}
+input[type=range]{
+  width:100%;
+}
+button{
+  width:100%;
+  margin-top:12px;
+  padding:10px;
+  border:0;
+  border-radius:9px;
+  background:#444b5a;
+  color:white;
+  font-weight:bold;
+}
+button:active{transform:scale(.98)}
+.value{
+  float:right;
+  color:#fff;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>💎 Jewellery CAD V1</h2>
+  <span>3D Designer</span>
+</header>
+
+<div class="panel">
+  <h3>💍 Bangle Controls</h3>
+
+  <label>
+    Size
+    <span class="value" id="sizeValue">3.0</span>
+  </label>
+  <input id="size" type="range" min="2.3" max="4.2" step="0.1" value="3">
+
+  <label>
+    Thickness
+    <span class="value" id="thickValue">0.22</span>
+  </label>
+  <input id="thickness" type="range" min="0.12" max="0.45" step="0.01" value="0.22">
+
+  <label>
+    Diamonds
+    <span class="value" id="diamondValue">24</span>
+  </label>
+  <input id="diamonds" type="range" min="8" max="48" step="1" value="24">
+
+  <button onclick="resetView()">Reset View</button>
+  <button onclick="toggleDiamonds()">Show / Hide Stones</button>
+</div>
+
+<div id="viewer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
+
+<script>
+
+let scene, camera, renderer, controls;
+let bangle, stones=[];
+let showStones=true;
+
+const params={
+  size:3,
+  thickness:.22,
+  diamonds:24
+};
+
+init();
+createBangle();
+
+function init(){
+
+  scene=new THREE.Scene();
+  scene.background=new THREE.Color(0x111318);
+
+  camera=new THREE.PerspectiveCamera(
+    45,
+    window.innerWidth/window.innerHeight,
+    .1,
+    100
+  );
+
+  camera.position.set(0,3.2,7);
+
+  renderer=new THREE.WebGLRenderer({
+    antialias:true
+  });
+
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(window.innerWidth,window.innerHeight-60);
+
+  document.getElementById("viewer").appendChild(renderer.domElement);
+
+  const ambient=new THREE.AmbientLight(0xffffff,.8);
+  scene.add(ambient);
+
+  const light1=new THREE.DirectionalLight(0xffffff,2);
+  light1.position.set(5,6,5);
+  scene.add(light1);
+
+  const light2=new THREE.DirectionalLight(0xffffff,1);
+  light2.position.set(-5,2,-4);
+  scene.add(light2);
+
+  controls=new THREE.OrbitControls(
+    camera,
+    renderer.domElement
+  );
+
+  controls.enableDamping=true;
+
+  window.addEventListener("resize",resize);
+
+  animate();
+}
+
+function createBangle(){
+
+  if(bangle) scene.remove(bangle);
+
+  stones.forEach(s=>scene.remove(s));
+  stones=[];
+
+  bangle=new THREE.Group();
+
+  const radius=params.size;
+  const tube=params.thickness;
+
+  const metalMaterial=new THREE.MeshStandardMaterial({
+    color:0xd4af37,
+    metalness:.9,
+    roughness:.18
+  });
+
+  const ringGeometry=new THREE.TorusGeometry(
+    radius,
+    tube,
+    32,
+    128
+  );
+
+  const ring=new THREE.Mesh(
+    ringGeometry,
+    metalMaterial
+  );
+
+  ring.rotation.x=Math.PI/2;
+
+  bangle.add(ring);
+
+  createDiamonds(radius,tube);
+
+  scene.add(bangle);
+}
+
+function createDiamonds(radius,tube){
+
+  const diamondMaterial=new THREE.MeshPhysicalMaterial({
+    color:0xffffff,
+    metalness:0,
+    roughness:.05,
+    transmission:.5,
+    transparent:true,
+    opacity:.95
+  });
+
+  const geo=new THREE.OctahedronGeometry(
+    tube*.75,
+    1
+  );
+
+  for(let i=0;i<params.diamonds;i++){
+
+    const angle=(i/params.diamonds)*Math.PI*2;
+
+    const x=Math.cos(angle)*radius;
+    const z=Math.sin(angle)*radius;
+
+    const stone=new THREE.Mesh(
+      geo,
+      diamondMaterial
+    );
+
+    stone.position.set(x,0,z);
+
+    stone.rotation.y=-angle;
+
+    bangle.add(stone);
+    stones.push(stone);
+  }
+}
+
+function updateBangle(){
+
+  params.size=parseFloat(
+    document.getElementById("size").value
+  );
+
+  params.thickness=parseFloat(
+    document.getElementById("thickness").value
+  );
+
+  params.diamonds=parseInt(
+    document.getElementById("diamonds").value
+  );
+
+  document.getElementById("sizeValue").textContent=
+    params.size.toFixed(1);
+
+  document.getElementById("thickValue").textContent=
+    params.thickness.toFixed(2);
+
+  document.getElementById("diamondValue").textContent=
+    params.diamonds;
+
+  createBangle();
+}
+
+document.getElementById("size")
+.addEventListener("input",updateBangle);
+
+document.getElementById("thickness")
+.addEventListener("input",updateBangle);
+
+document.getElementById("diamonds")
+.addEventListener("input",updateBangle);
+
+function toggleDiamonds(){
+
+  showStones=!showStones;
+
+  stones.forEach(
+    stone=>stone.visible=showStones
+  );
+}
+
+function resetView(){
+
+  camera.position.set(0,3.2,7);
+
+  controls.target.set(0,0,0);
+
+  controls.update();
+}
+
+function resize(){
+
+  camera.aspect=
+    window.innerWidth/window.innerHeight;
+
+  camera.updateProjectionMatrix();
+
+  renderer.setSize(
+    window.innerWidth,
+    window.innerHeight-60
+  );
+}
+
+function animate(){
+
+  requestAnimationFrame(animate);
+
+  controls.update();
+
+  renderer.render(scene,camera);
+}
+
+</script>
+
+</body>
+  </html>
