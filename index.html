@@ -3,10 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jewellery CAD AI V1.2</title>
+
+<title>Jewellery CAD AI V1.2 Fixed</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 body{
   margin:0;
@@ -260,18 +263,26 @@ Stones
   class="status"
   id="status"
 >
-Ready — Select jewellery type and generate a 3D concept.
+Ready — Select jewellery type and generate.
 </div>
 
 </div>
 
 <div id="viewer"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
+<!-- THREE.JS -->
 
-<script>
+<script type="module">
+
+import * as THREE
+from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
+
+import {
+  OrbitControls
+}
+from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js";
+
 
 let scene;
 let camera;
@@ -279,14 +290,20 @@ let renderer;
 let controls;
 
 let jewelleryGroup;
-let stones=[];
 
-let showStones=true;
+let stones = [];
 
-const params={
+let showStones = true;
+
+
+const params = {
+
   size:3,
-  thickness:.22,
+
+  thickness:0.22,
+
   stones:24
+
 };
 
 
@@ -297,18 +314,20 @@ generateCAD();
 
 function init(){
 
-  scene=new THREE.Scene();
+  scene = new THREE.Scene();
 
-  scene.background=
+  scene.background =
     new THREE.Color(0x111318);
 
 
-  camera=new THREE.PerspectiveCamera(
-    45,
-    window.innerWidth/window.innerHeight,
-    .1,
-    100
-  );
+  camera =
+    new THREE.PerspectiveCamera(
+      45,
+      window.innerWidth /
+      (window.innerHeight - 60),
+      0.1,
+      100
+    );
 
 
   camera.position.set(
@@ -318,73 +337,99 @@ function init(){
   );
 
 
-  renderer=
+  renderer =
     new THREE.WebGLRenderer({
       antialias:true
     });
 
 
   renderer.setPixelRatio(
-    window.devicePixelRatio
+    Math.min(window.devicePixelRatio,2)
   );
 
 
   renderer.setSize(
     window.innerWidth,
-    window.innerHeight-60
+    window.innerHeight - 60
   );
 
 
   document
     .getElementById("viewer")
-    .appendChild(
-      renderer.domElement
-    );
+    .appendChild(renderer.domElement);
 
 
-  const ambient=
+  /* LIGHTS */
+
+  const ambient =
     new THREE.AmbientLight(
       0xffffff,
-      .8
+      1.2
     );
 
   scene.add(ambient);
 
 
-  const light1=
+  const light1 =
     new THREE.DirectionalLight(
       0xffffff,
-      2
+      2.5
     );
 
   light1.position.set(
-    5,6,5
+    5,
+    7,
+    6
   );
 
   scene.add(light1);
 
 
-  const light2=
+  const light2 =
     new THREE.DirectionalLight(
       0xffffff,
-      1
+      1.5
     );
 
   light2.position.set(
-    -5,2,-4
+    -5,
+    3,
+    -5
   );
 
   scene.add(light2);
 
 
-  controls=
-    new THREE.OrbitControls(
+  const light3 =
+    new THREE.PointLight(
+      0xffffff,
+      1.5
+    );
+
+  light3.position.set(
+    0,
+    5,
+    3
+  );
+
+  scene.add(light3);
+
+
+  /* CONTROLS */
+
+  controls =
+    new OrbitControls(
       camera,
       renderer.domElement
     );
 
+  controls.enableDamping = true;
 
-  controls.enableDamping=true;
+  controls.dampingFactor = 0.08;
+
+  controls.minDistance = 3;
+
+  controls.maxDistance = 20;
 
 
   window.addEventListener(
@@ -394,28 +439,34 @@ function init(){
 
 
   animate();
+
 }
 
 
 function metalColor(){
 
-  const metal=
+  const metal =
     document.getElementById(
       "metal"
     ).value;
 
 
-  if(metal==="white"){
+  if(metal === "white"){
+
     return 0xd9dde2;
+
   }
 
 
-  if(metal==="rose"){
+  if(metal === "rose"){
+
     return 0xb76e79;
+
   }
 
 
   return 0xd4af37;
+
 }
 
 
@@ -425,11 +476,12 @@ function metalMaterial(){
 
     color:metalColor(),
 
-    metalness:.9,
+    metalness:0.9,
 
-    roughness:.18
+    roughness:0.18
 
   });
+
 }
 
 
@@ -441,40 +493,47 @@ function stoneMaterial(){
 
     metalness:0,
 
-    roughness:.05,
+    roughness:0.05,
 
-    transmission:.35,
+    transmission:0.25,
 
     transparent:true,
 
-    opacity:.96
+    opacity:0.95
 
   });
+
 }
 
 
 function clearModel(){
 
   if(jewelleryGroup){
+
     scene.remove(
       jewelleryGroup
     );
+
   }
 
-  stones=[];
 
-  jewelleryGroup=
+  stones = [];
+
+
+  jewelleryGroup =
     new THREE.Group();
+
 
   scene.add(
     jewelleryGroup
   );
+
 }
 
 
 function generateCAD(){
 
-  params.size=
+  params.size =
     parseFloat(
       document.getElementById(
         "size"
@@ -482,7 +541,7 @@ function generateCAD(){
     );
 
 
-  params.thickness=
+  params.thickness =
     parseFloat(
       document.getElementById(
         "thickness"
@@ -490,7 +549,7 @@ function generateCAD(){
     );
 
 
-  params.stones=
+  params.stones =
     parseInt(
       document.getElementById(
         "stones"
@@ -504,59 +563,71 @@ function generateCAD(){
   clearModel();
 
 
-  const type=
+  const type =
     document.getElementById(
       "jewelleryType"
     ).value;
 
 
-  if(type==="bangle"){
+  if(type === "bangle"){
+
     createBangle();
+
   }
 
-  else if(type==="ring"){
+
+  else if(type === "ring"){
+
     createRing();
+
   }
 
-  else if(type==="bracelet"){
+
+  else if(type === "bracelet"){
+
     createBracelet();
+
   }
 
-  else if(type==="necklace"){
+
+  else if(type === "necklace"){
+
     createNecklace();
+
   }
 
-  else if(type==="earring"){
+
+  else if(type === "earring"){
+
     createEarring();
+
   }
+
+
+  resetView();
 
 
   document.getElementById(
     "status"
-  ).innerHTML=
-    "✅ 3D CAD concept generated: " +
-    type +
-    " • " +
-    document.getElementById(
-      "metal"
-    ).value +
-    " • " +
-    document.getElementById(
-      "stoneType"
-    ).value;
+  ).innerHTML =
+    "✅ 3D model generated: " +
+    type;
+
 }
 
 
+/* BANGLE */
+
 function createBangle(){
 
-  const radius=
+  const radius =
     params.size;
 
-  const tube=
+  const tube =
     params.thickness;
 
 
-  const ring=
+  const ring =
     new THREE.Mesh(
 
       new THREE.TorusGeometry(
@@ -571,8 +642,8 @@ function createBangle(){
     );
 
 
-  ring.rotation.x=
-    Math.PI/2;
+  ring.rotation.x =
+    Math.PI / 2;
 
 
   jewelleryGroup.add(
@@ -585,19 +656,22 @@ function createBangle(){
     params.stones,
     tube
   );
+
 }
 
 
+/* RING */
+
 function createRing(){
 
-  const radius=
-    params.size*.72;
+  const radius =
+    params.size * 0.72;
 
-  const tube=
+  const tube =
     params.thickness;
 
 
-  const ring=
+  const ring =
     new THREE.Mesh(
 
       new THREE.TorusGeometry(
@@ -612,8 +686,8 @@ function createRing(){
     );
 
 
-  ring.rotation.x=
-    Math.PI/2;
+  ring.rotation.x =
+    Math.PI / 2;
 
 
   jewelleryGroup.add(
@@ -621,20 +695,20 @@ function createRing(){
   );
 
 
-  const stoneType=
+  const stoneType =
     document.getElementById(
       "stoneType"
     ).value;
 
 
-  if(stoneType!=="none"){
+  if(stoneType !== "none"){
 
-    const stone=
+    const stone =
       new THREE.Mesh(
 
         new THREE.OctahedronGeometry(
-          tube*2.2,
-          1
+          tube * 2.2,
+          2
         ),
 
         stoneMaterial()
@@ -644,7 +718,7 @@ function createRing(){
 
     stone.position.set(
       0,
-      tube*2.3,
+      radius * 0.95,
       0
     );
 
@@ -653,19 +727,24 @@ function createRing(){
       stone
     );
 
+
     stones.push(
       stone
     );
+
   }
+
 }
 
 
+/* BRACELET */
+
 function createBracelet(){
 
-  const links=12;
+  const links = 12;
 
-  const radius=
-    params.size*.75;
+  const radius =
+    params.size * 0.75;
 
 
   for(
@@ -674,26 +753,26 @@ function createBracelet(){
     i++
   ){
 
-    const angle=
-      (i/links)*
-      Math.PI*2;
+    const angle =
+      (i / links) *
+      Math.PI * 2;
 
 
-    const x=
-      Math.cos(angle)*
+    const x =
+      Math.cos(angle) *
       radius;
 
 
-    const z=
-      Math.sin(angle)*
+    const z =
+      Math.sin(angle) *
       radius;
 
 
-    const link=
+    const link =
       new THREE.Mesh(
 
         new THREE.TorusGeometry(
-          .55,
+          0.55,
           params.thickness,
           20,
           40
@@ -711,17 +790,18 @@ function createBracelet(){
     );
 
 
-    link.rotation.x=
-      Math.PI/2;
+    link.rotation.x =
+      Math.PI / 2;
 
 
-    link.rotation.y=
+    link.rotation.y =
       angle;
 
 
     jewelleryGroup.add(
       link
     );
+
   }
 
 
@@ -730,54 +810,53 @@ function createBracelet(){
     params.stones,
     params.thickness
   );
+
 }
 
 
+/* NECKLACE */
+
 function createNecklace(){
 
-  const curve=
+  const curve =
     new THREE.EllipseCurve(
-
-      0,0,
-
-      params.size*1.5,
-      params.size*.9,
-
-      Math.PI*.05,
-      Math.PI*.95,
-
+      0,
+      0,
+      params.size * 1.5,
+      params.size * 0.9,
+      Math.PI * 0.05,
+      Math.PI * 0.95,
       false,
-
       0
-
     );
 
 
-  const points=
+  const points =
     curve.getPoints(80);
 
 
-  const path=
+  const path =
     new THREE.CatmullRomCurve3(
 
       points.map(
-        p=>new THREE.Vector3(
-          p.x,
-          0,
-          p.y
-        )
+        p =>
+          new THREE.Vector3(
+            p.x,
+            0,
+            p.y
+          )
       )
 
     );
 
 
-  const tube=
+  const tube =
     new THREE.Mesh(
 
       new THREE.TubeGeometry(
         path,
         100,
-        params.thickness*.55,
+        params.thickness * 0.55,
         12,
         false
       ),
@@ -795,20 +874,23 @@ function createNecklace(){
   addNecklaceStones(
     points
   );
+
 }
 
 
+/* EARRING */
+
 function createEarring(){
 
-  const group=
+  const group =
     new THREE.Group();
 
 
-  const hoop=
+  const hoop =
     new THREE.Mesh(
 
       new THREE.TorusGeometry(
-        params.size*.7,
+        params.size * 0.7,
         params.thickness,
         24,
         64
@@ -819,8 +901,8 @@ function createEarring(){
     );
 
 
-  hoop.rotation.x=
-    Math.PI/2;
+  hoop.rotation.x =
+    Math.PI / 2;
 
 
   group.add(
@@ -828,20 +910,20 @@ function createEarring(){
   );
 
 
-  const stoneType=
+  const stoneType =
     document.getElementById(
       "stoneType"
     ).value;
 
 
-  if(stoneType!=="none"){
+  if(stoneType !== "none"){
 
-    const stone=
+    const stone =
       new THREE.Mesh(
 
         new THREE.OctahedronGeometry(
-          params.thickness*2,
-          1
+          params.thickness * 2,
+          2
         ),
 
         stoneMaterial()
@@ -851,7 +933,7 @@ function createEarring(){
 
     stone.position.set(
       0,
-      params.size*.7,
+      params.size * 0.7,
       0
     );
 
@@ -860,17 +942,22 @@ function createEarring(){
       stone
     );
 
+
     stones.push(
       stone
     );
+
   }
 
 
   jewelleryGroup.add(
     group
   );
+
 }
 
+
+/* CIRCULAR STONES */
 
 function addCircularStones(
   radius,
@@ -878,25 +965,27 @@ function addCircularStones(
   size
 ){
 
-  const type=
+  const type =
     document.getElementById(
       "stoneType"
     ).value;
 
 
-  if(type==="none"){
+  if(type === "none"){
+
     return;
+
   }
 
 
-  const geo=
+  const geo =
     new THREE.OctahedronGeometry(
-      size*.8,
+      size * 0.8,
       1
     );
 
 
-  const material=
+  const material =
     stoneMaterial();
 
 
@@ -906,12 +995,12 @@ function addCircularStones(
     i++
   ){
 
-    const angle=
-      (i/count)*
-      Math.PI*2;
+    const angle =
+      (i / count) *
+      Math.PI * 2;
 
 
-    const stone=
+    const stone =
       new THREE.Mesh(
         geo,
         material
@@ -920,19 +1009,15 @@ function addCircularStones(
 
     stone.position.set(
 
-      Math.cos(angle)*
+      Math.cos(angle) *
       radius,
 
-      size*.7,
+      size * 1.15,
 
-      Math.sin(angle)*
+      Math.sin(angle) *
       radius
 
     );
-
-
-    stone.rotation.y=
-      -angle;
 
 
     jewelleryGroup.add(
@@ -943,40 +1028,46 @@ function addCircularStones(
     stones.push(
       stone
     );
+
   }
+
 }
 
+
+/* NECKLACE STONES */
 
 function addNecklaceStones(
   points
 ){
 
-  const type=
+  const type =
     document.getElementById(
       "stoneType"
     ).value;
 
 
-  if(type==="none"){
+  if(type === "none"){
+
     return;
+
   }
 
 
-  const count=
+  const count =
     Math.min(
       params.stones,
       points.length
     );
 
 
-  const geo=
+  const geo =
     new THREE.OctahedronGeometry(
-      params.thickness*1.2,
+      params.thickness * 1.2,
       1
     );
 
 
-  const material=
+  const material =
     stoneMaterial();
 
 
@@ -986,18 +1077,24 @@ function addNecklaceStones(
     i++
   ){
 
-    const index=
+    const index =
       Math.floor(
-        (i/(count-1))*
-        (points.length-1)
+
+        (i /
+          Math.max(
+            count - 1,
+            1
+          )) *
+        (points.length - 1)
+
       );
 
 
-    const p=
+    const p =
       points[index];
 
 
-    const stone=
+    const stone =
       new THREE.Mesh(
         geo,
         material
@@ -1006,7 +1103,7 @@ function addNecklaceStones(
 
     stone.position.set(
       p.x,
-      .15,
+      0.15,
       p.y
     );
 
@@ -1019,161 +1116,192 @@ function addNecklaceStones(
     stones.push(
       stone
     );
+
   }
+
 }
 
+
+/* LABELS */
 
 function updateLabels(){
 
   document.getElementById(
     "sizeValue"
-  ).textContent=
+  ).textContent =
     params.size.toFixed(1);
 
 
   document.getElementById(
     "thickValue"
-  ).textContent=
+  ).textContent =
     params.thickness.toFixed(2);
 
 
   document.getElementById(
     "stoneValue"
-  ).textContent=
+  ).textContent =
     params.stones;
+
 }
 
 
-document
-  .getElementById("size")
-  .addEventListener(
-    "input",
-    updateLabels
-  );
+/* RANGE EVENTS */
+
+document.getElementById(
+  "size"
+).addEventListener(
+  "input",
+  updateLabels
+);
 
 
-document
-  .getElementById("thickness")
-  .addEventListener(
-    "input",
-    updateLabels
-  );
+document.getElementById(
+  "thickness"
+).addEventListener(
+  "input",
+  updateLabels
+);
 
 
-document
-  .getElementById("stones")
-  .addEventListener(
-    "input",
-    updateLabels
-  );
+document.getElementById(
+  "stones"
+).addEventListener(
+  "input",
+  updateLabels
+);
 
 
-document
-  .getElementById("jewelleryType")
-  .addEventListener(
-    "change",
-    generateCAD
-  );
+/* AUTO GENERATE */
+
+document.getElementById(
+  "jewelleryType"
+).addEventListener(
+  "change",
+  generateCAD
+);
 
 
-document
-  .getElementById("metal")
-  .addEventListener(
-    "change",
-    generateCAD
-  );
+document.getElementById(
+  "metal"
+).addEventListener(
+  "change",
+  generateCAD
+);
 
 
-document
-  .getElementById("stoneType")
-  .addEventListener(
-    "change",
-    generateCAD
-  );
+document.getElementById(
+  "stoneType"
+).addEventListener(
+  "change",
+  generateCAD
+);
 
 
-document
-  .getElementById("photo")
-  .addEventListener(
-    "change",
-    function(){
+/* PHOTO */
 
-      const file=
-        this.files[0];
+document.getElementById(
+  "photo"
+).addEventListener(
+  "change",
+  function(){
 
-
-      if(!file){
-        return;
-      }
+    const file =
+      this.files[0];
 
 
-      const url=
-        URL.createObjectURL(
-          file
-        );
+    if(!file){
+
+      return;
+
+    }
 
 
-      const preview=
-        document.getElementById(
-          "preview"
-        );
+    const url =
+      URL.createObjectURL(
+        file
+      );
 
 
-      preview.src=url;
-
-      preview.style.display=
-        "block";
-
-
+    const preview =
       document.getElementById(
-        "status"
-      ).innerHTML=
-        "📷 Reference image loaded. Select options and generate your 3D concept.";
-
-    }
-  );
+        "preview"
+      );
 
 
-function toggleStones(){
-
-  showStones=
-    !showStones;
+    preview.src =
+      url;
 
 
-  stones.forEach(
-    stone=>{
-      stone.visible=
-        showStones;
-    }
-  );
-}
+    preview.style.display =
+      "block";
 
 
-function resetView(){
+    document.getElementById(
+      "status"
+    ).innerHTML =
+      "📷 Reference image loaded.";
 
-  camera.position.set(
-    0,
-    3.5,
-    8
-  );
-
-
-  controls.target.set(
-    0,
-    0,
-    0
-  );
+  }
+);
 
 
-  controls.update();
-}
+/* STONE VISIBILITY */
 
+window.toggleStones =
+  function(){
+
+    showStones =
+      !showStones;
+
+
+    stones.forEach(
+      stone => {
+
+        stone.visible =
+          showStones;
+
+      }
+    );
+
+  };
+
+
+/* RESET */
+
+window.resetView =
+  function(){
+
+    camera.position.set(
+      0,
+      3.5,
+      8
+    );
+
+
+    controls.target.set(
+      0,
+      0,
+      0
+    );
+
+
+    controls.update();
+
+  };
+
+
+/* RESIZE */
 
 function resize(){
 
-  camera.aspect=
-    window.innerWidth/
-    (window.innerHeight-60);
+  const height =
+    window.innerHeight - 60;
+
+
+  camera.aspect =
+    window.innerWidth /
+    height;
 
 
   camera.updateProjectionMatrix();
@@ -1181,10 +1309,13 @@ function resize(){
 
   renderer.setSize(
     window.innerWidth,
-    window.innerHeight-60
+    height
   );
+
 }
 
+
+/* ANIMATION */
 
 function animate(){
 
@@ -1200,6 +1331,7 @@ function animate(){
     scene,
     camera
   );
+
 }
 
 </script>
