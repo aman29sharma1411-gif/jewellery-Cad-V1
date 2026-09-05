@@ -3,20 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Jewellery CAD AI V2.5</title>
+
+<title>Jewellery CAD AI V2.6</title>
 
 <style>
-*{box-sizing:border-box}
+
+*{
+  box-sizing:border-box;
+}
 
 body{
   margin:0;
-  background:#090909;
+  background:#080808;
   color:#fff;
   font-family:Arial,sans-serif;
 }
 
 header{
-  height:58px;
+  height:60px;
   background:#151515;
   display:flex;
   align-items:center;
@@ -27,6 +31,7 @@ header{
 }
 
 .container{
+  width:100%;
   max-width:950px;
   margin:auto;
   padding:12px;
@@ -38,7 +43,8 @@ header{
   gap:10px;
 }
 
-.box,.reference{
+.box,
+.reference{
   background:#171717;
   border-radius:11px;
   padding:11px;
@@ -51,7 +57,8 @@ label{
   margin-bottom:6px;
 }
 
-select,input{
+select,
+input{
   width:100%;
   padding:11px;
   border-radius:8px;
@@ -74,7 +81,18 @@ button{
 
 button.secondary{
   background:#333;
-  color:white;
+  color:#fff;
+}
+
+.viewButtons{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:8px;
+}
+
+.viewButtons button{
+  font-size:13px;
+  padding:10px;
 }
 
 .reference{
@@ -130,154 +148,388 @@ button.secondary{
   font-size:13px;
 }
 
-@media(max-width:600px){
-  .viewer{height:430px}
+.info{
+  margin-top:10px;
+  background:#121212;
+  border:1px solid #292929;
+  border-radius:10px;
+  padding:10px;
+  font-size:12px;
+  color:#aaa;
+  line-height:1.5;
 }
+
+@media(max-width:600px){
+
+  .viewer{
+    height:430px;
+  }
+
+  .viewButtons button{
+    font-size:12px;
+  }
+
+}
+
 </style>
 </head>
 
 <body>
 
 <header>
-💎 Jewellery CAD AI V2.5
+💎 Jewellery CAD AI V2.6
 </header>
 
 <div class="container">
 
 <div class="controls">
 
+<!-- JEWELLERY TYPE -->
+
 <div class="box">
+
 <label>Jewellery Type</label>
+
 <select id="type">
-<option value="bangle">Bangle</option>
-<option value="ring">Ring</option>
-<option value="bracelet">Bracelet</option>
-<option value="necklace">Necklace</option>
-<option value="earring">Earring</option>
+
+<option value="bangle">
+Bangle
+</option>
+
+<option value="ring">
+Ring
+</option>
+
+<option value="bracelet">
+Bracelet
+</option>
+
+<option value="necklace">
+Necklace
+</option>
+
+<option value="earring">
+Earring
+</option>
+
 </select>
+
 </div>
 
+
+<!-- METAL -->
+
 <div class="box">
+
 <label>Metal</label>
+
 <select id="metal">
-<option value="yellow">Yellow Gold</option>
-<option value="white">White Gold</option>
-<option value="rose">Rose Gold</option>
+
+<option value="yellow">
+Yellow Gold
+</option>
+
+<option value="white">
+White Gold
+</option>
+
+<option value="rose">
+Rose Gold
+</option>
+
 </select>
+
 </div>
 
+
+<!-- STONE -->
+
 <div class="box">
+
 <label>Stone</label>
+
 <select id="stone">
-<option value="diamond">Diamond</option>
-<option value="solitaire">Solitaire</option>
-<option value="none">None</option>
+
+<option value="diamond">
+Diamond
+</option>
+
+<option value="solitaire">
+Solitaire
+</option>
+
+<option value="none">
+None
+</option>
+
 </select>
+
 </div>
 
+
+<!-- STYLE -->
+
 <div class="box">
+
 <label>Design Style</label>
+
 <select id="style">
-<option value="classic">Classic</option>
-<option value="pave">Pavé</option>
-<option value="solitaire">Solitaire</option>
+
+<option value="classic">
+Classic
+</option>
+
+<option value="pave">
+Pavé
+</option>
+
+<option value="solitaire">
+Solitaire
+</option>
+
 </select>
+
 </div>
 
+
+<!-- SIZE -->
+
 <div class="box">
+
 <label>Size</label>
+
 <select id="size">
-<option value="2.2">2.2</option>
-<option value="2.4">2.4</option>
-<option value="2.5" selected>2.5</option>
-<option value="2.6">2.6</option>
-<option value="2.8">2.8</option>
-<option value="3.0">3.0</option>
+
+<option value="2.2">
+2.2
+</option>
+
+<option value="2.4">
+2.4
+</option>
+
+<option value="2.5" selected>
+2.5
+</option>
+
+<option value="2.6">
+2.6
+</option>
+
+<option value="2.8">
+2.8
+</option>
+
+<option value="3.0">
+3.0
+</option>
+
 </select>
+
 </div>
 
+
+<!-- THICKNESS -->
+
 <div class="box">
-<label>Thickness</label>
+
+<label>
+Thickness
+</label>
+
 <input
- id="thickness"
- type="range"
- min="0.16"
- max="0.50"
- step="0.01"
- value="0.28"
- oninput="thicknessValue.innerText=this.value">
+id="thickness"
+type="range"
+min="0.16"
+max="0.50"
+step="0.01"
+value="0.28"
+oninput="thicknessValue.innerText=this.value">
 
 <div style="text-align:center;margin-top:5px">
-<span id="thicknessValue">0.28</span>
-</div>
+
+<span id="thicknessValue">
+0.28
+</span>
+
 </div>
 
+</div>
+
+
+<!-- DIAMONDS -->
+
 <div class="box">
-<label>Diamonds</label>
+
+<label>
+Diamonds
+</label>
+
 <input
- id="diamondCount"
- type="range"
- min="0"
- max="48"
- step="1"
- value="24"
- oninput="diamondValue.innerText=this.value">
+id="diamondCount"
+type="range"
+min="0"
+max="60"
+step="1"
+value="24"
+oninput="diamondValue.innerText=this.value">
 
 <div style="text-align:center;margin-top:5px">
-<span id="diamondValue">24</span>
-</div>
+
+<span id="diamondValue">
+24
+</span>
+
 </div>
 
+</div>
+
+
+<!-- DIAMOND SIZE -->
+
 <div class="box">
-<label>Diamond Size</label>
+
+<label>
+Diamond Size
+</label>
+
 <select id="diamondSize">
-<option value="small">Small</option>
-<option value="medium" selected>Medium</option>
-<option value="large">Large</option>
+
+<option value="small">
+Small
+</option>
+
+<option value="medium" selected>
+Medium
+</option>
+
+<option value="large">
+Large
+</option>
+
 </select>
+
 </div>
 
 </div>
+
+
+<!-- REFERENCE -->
 
 <div class="reference">
 
-<label>Reference Photo</label>
+<label>
+Reference Photo
+</label>
 
 <input
- type="file"
- id="reference"
- accept="image/*">
+type="file"
+id="reference"
+accept="image/*">
 
-<img id="preview">
+<img
+id="preview">
 
 </div>
 
+
+<!-- GENERATE -->
+
 <button onclick="generateCAD()">
+
 ✨ Generate CAD
+
 </button>
 
-<button class="secondary" onclick="resetCAD()">
+
+<!-- RESET -->
+
+<button
+class="secondary"
+onclick="resetCAD()">
+
 ↻ Reset
+
 </button>
 
-<button class="secondary" onclick="toggleStones()">
+
+<!-- STONES -->
+
+<button
+class="secondary"
+onclick="toggleStones()">
+
 💎 Show / Hide Stones
+
 </button>
+
+
+<!-- VIEW BUTTONS -->
+
+<div class="viewButtons">
+
+<button
+class="secondary"
+onclick="frontView()">
+
+Front
+
+</button>
+
+<button
+class="secondary"
+onclick="topView()">
+
+Top
+
+</button>
+
+<button
+class="secondary"
+onclick="resetView()">
+
+3D View
+
+</button>
+
+</div>
+
+
+<!-- VIEWER -->
 
 <div class="viewer">
 
-<div class="status" id="status">
-V2.5 Starting...
-</div>
+<div
+class="status"
+id="status">
 
-<div class="error" id="error"></div>
-
-<div id="viewer"></div>
+V2.6 Starting...
 
 </div>
 
+<div
+class="error"
+id="error">
 </div>
 
+<div id="viewer">
+</div>
+
+</div>
+
+
+<div class="info">
+
+👆 Drag = Rotate &nbsp; | &nbsp;
+🤏 Pinch = Zoom &nbsp; | &nbsp;
+Two fingers = Pan
+
+</div>
+
+</div>
+
+
+<!-- THREE.JS -->
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 
@@ -285,6 +537,10 @@ V2.5 Starting...
 
 
 <script>
+
+/* =====================================
+   GLOBAL VARIABLES
+===================================== */
 
 let scene;
 let camera;
@@ -297,19 +553,22 @@ let stoneGroup;
 let stonesVisible=true;
 
 
-/* =========================
+/* =====================================
    INITIALIZE
-========================= */
+===================================== */
 
 function init(){
 
 try{
 
-scene=new THREE.Scene();
+scene=
+new THREE.Scene();
 
 scene.background=
-new THREE.Color(0x030303);
+new THREE.Color(0x020202);
 
+
+/* CAMERA */
 
 camera=
 new THREE.PerspectiveCamera(
@@ -326,17 +585,28 @@ camera.position.set(
 );
 
 
+/* RENDERER */
+
 renderer=
 new THREE.WebGLRenderer({
-antialias:true
+
+antialias:true,
+
+alpha:false
+
 });
 
 renderer.setPixelRatio(
-Math.min(window.devicePixelRatio,2)
+Math.min(
+window.devicePixelRatio,
+2
+)
 );
 
 let viewer=
-document.getElementById("viewer");
+document.getElementById(
+"viewer"
+);
 
 renderer.setSize(
 viewer.clientWidth,
@@ -348,6 +618,8 @@ renderer.domElement
 );
 
 
+/* CONTROLS */
+
 controls=
 new THREE.OrbitControls(
 camera,
@@ -355,12 +627,15 @@ renderer.domElement
 );
 
 controls.enableDamping=true;
+
 controls.dampingFactor=.07;
+
 controls.minDistance=3;
-controls.maxDistance=16;
+
+controls.maxDistance=18;
 
 
-/* LIGHTS */
+/* LIGHT 1 */
 
 scene.add(
 new THREE.AmbientLight(
@@ -369,42 +644,62 @@ new THREE.AmbientLight(
 )
 );
 
-let key=
+
+/* LIGHT 2 */
+
+let keyLight=
 new THREE.DirectionalLight(
 0xffffff,
-2.8
+3
 );
 
-key.position.set(
-5,8,6
+keyLight.position.set(
+5,
+8,
+6
 );
 
-scene.add(key);
+scene.add(
+keyLight
+);
 
-let fill=
+
+/* LIGHT 3 */
+
+let fillLight=
 new THREE.DirectionalLight(
 0xffffff,
-1.5
+1.8
 );
 
-fill.position.set(
--6,4,-5
+fillLight.position.set(
+-6,
+5,
+-5
 );
 
-scene.add(fill);
+scene.add(
+fillLight
+);
 
-let top=
-new THREE.PointLight(
+
+/* LIGHT 4 */
+
+let rimLight=
+new THREE.DirectionalLight(
 0xffffff,
-1.5,
-30
+1.8
 );
 
-top.position.set(
-0,6,2
+rimLight.position.set(
+0,
+-3,
+-8
 );
 
-scene.add(top);
+scene.add(
+rimLight
+);
 
 
 /* GROUPS */
@@ -415,11 +710,16 @@ new THREE.Group();
 stoneGroup=
 new THREE.Group();
 
-scene.add(jewelleryGroup);
-scene.add(stoneGroup);
+scene.add(
+jewelleryGroup
+);
+
+scene.add(
+stoneGroup
+);
 
 
-/* GENERATE */
+/* FIRST MODEL */
 
 generateCAD();
 
@@ -429,10 +729,14 @@ window.addEventListener(
 onResize
 );
 
+
 animate();
 
-document.getElementById("status")
-.innerText="V2.5 Ready";
+
+document.getElementById(
+"status"
+).innerText=
+"V2.6 Ready";
 
 }catch(e){
 
@@ -443,47 +747,64 @@ showError(e);
 }
 
 
-/* =========================
-   METAL
-========================= */
+/* =====================================
+   GOLD MATERIAL
+===================================== */
 
 function getMetal(){
 
 let value=
-document.getElementById("metal").value;
+document.getElementById(
+"metal"
+).value;
+
 
 if(value==="white"){
 
 return new THREE.MeshStandardMaterial({
+
 color:0xd9dde2,
-metalness:.96,
-roughness:.15
+
+metalness:.97,
+
+roughness:.14
+
 });
 
 }
+
 
 if(value==="rose"){
 
 return new THREE.MeshStandardMaterial({
+
 color:0xb76e79,
-metalness:.96,
-roughness:.17
+
+metalness:.97,
+
+roughness:.16
+
 });
 
 }
+
 
 return new THREE.MeshStandardMaterial({
+
 color:0xd4af37,
+
 metalness:.97,
-roughness:.16
+
+roughness:.15
+
 });
 
 }
 
 
-/* =========================
-   DIAMOND
-========================= */
+/* =====================================
+   DIAMOND MATERIAL
+===================================== */
 
 function getDiamondMaterial(){
 
@@ -491,22 +812,243 @@ return new THREE.MeshPhysicalMaterial({
 
 color:0xffffff,
 
-metalness:.02,
+metalness:0.0,
 
-roughness:.015,
+roughness:0.012,
+
+transmission:0.12,
 
 transparent:true,
 
-opacity:.97
+opacity:.98,
+
+reflectivity:1
 
 });
 
 }
 
 
-/* =========================
-   CLEAR
-========================= */
+/* =====================================
+   DIAMOND GEOMETRY
+===================================== */
+
+function createBrilliantDiamond(
+radius
+){
+
+let vertices=[];
+
+let indices=[];
+
+
+/*
+   TOP POINT
+*/
+
+vertices.push(
+0,
+radius*1.25,
+0
+);
+
+
+/*
+   UPPER GIRDLE RING
+*/
+
+let upperY=
+radius*.38;
+
+for(
+let i=0;
+i<8;
+i++
+){
+
+let a=
+(i/8)*
+Math.PI*2;
+
+vertices.push(
+
+Math.cos(a)*radius,
+
+upperY,
+
+Math.sin(a)*radius
+
+);
+
+}
+
+
+/*
+   LOWER GIRDLE RING
+*/
+
+let lowerY=
+-radius*.05;
+
+for(
+let i=0;
+i<8;
+i++
+){
+
+let a=
+(i/8)*
+Math.PI*2;
+
+vertices.push(
+
+Math.cos(a)*radius*.86,
+
+lowerY,
+
+Math.sin(a)*radius*.86
+
+);
+
+}
+
+
+/*
+   BOTTOM POINT
+*/
+
+let bottomIndex=
+vertices.length/3;
+
+vertices.push(
+
+0,
+
+-radius*.92,
+
+0
+
+);
+
+
+/*
+   TOP FACETS
+*/
+
+for(
+let i=0;
+i<8;
+i++
+){
+
+let next=
+(i+1)%8;
+
+indices.push(
+0,
+1+i,
+1+next
+);
+
+}
+
+
+/*
+   GIRDLE FACETS
+*/
+
+for(
+let i=0;
+i<8;
+i++
+){
+
+let next=
+(i+1)%8;
+
+let a=
+1+i;
+
+let b=
+1+next;
+
+let c=
+9+i;
+
+let d=
+9+next;
+
+indices.push(
+a,
+c,
+b
+);
+
+indices.push(
+b,
+c,
+d
+);
+
+}
+
+
+/*
+   LOWER FACETS
+*/
+
+for(
+let i=0;
+i<8;
+i++
+){
+
+let next=
+(i+1)%8;
+
+indices.push(
+
+9+i,
+bottomIndex,
+9+next
+
+);
+
+}
+
+
+/*
+   BUFFER GEOMETRY
+*/
+
+let geometry=
+new THREE.BufferGeometry();
+
+geometry.setAttribute(
+
+"position",
+
+new THREE.Float32BufferAttribute(
+vertices,
+3
+)
+
+);
+
+geometry.setIndex(
+indices
+);
+
+geometry.computeVertexNormals();
+
+return geometry;
+
+}
+
+
+/* =====================================
+   CLEAR MODEL
+===================================== */
 
 function clearModel(){
 
@@ -519,6 +1061,7 @@ jewelleryGroup.children[0]
 );
 
 }
+
 
 while(
 stoneGroup.children.length>0
@@ -533,9 +1076,9 @@ stoneGroup.children[0]
 }
 
 
-/* =========================
-   GENERATE
-========================= */
+/* =====================================
+   GENERATE CAD
+===================================== */
 
 function generateCAD(){
 
@@ -544,30 +1087,51 @@ try{
 clearModel();
 
 let type=
-document.getElementById("type").value;
+document.getElementById(
+"type"
+).value;
+
 
 if(type==="bangle"){
+
 createBangle();
+
 }
+
 
 else if(type==="ring"){
+
 createRing();
+
 }
+
 
 else if(type==="bracelet"){
+
 createBracelet();
+
 }
+
 
 else if(type==="necklace"){
+
 createNecklace();
+
 }
+
 
 else if(type==="earring"){
+
 createEarring();
+
 }
 
-document.getElementById("status")
-.innerText="V2.5 CAD Generated ✓";
+
+document.getElementById(
+"status"
+).innerText=
+"V2.6 CAD Generated ✓";
+
 
 }catch(e){
 
@@ -578,44 +1142,61 @@ showError(e);
 }
 
 
-/* =========================
+/* =====================================
    BANGLE
-========================= */
+===================================== */
 
 function createBangle(){
 
 let size=
 parseFloat(
-document.getElementById("size").value
+document.getElementById(
+"size"
+).value
 );
 
 let thickness=
 parseFloat(
-document.getElementById("thickness").value
+document.getElementById(
+"thickness"
+).value
 );
 
 let count=
 parseInt(
-document.getElementById("diamondCount").value
+document.getElementById(
+"diamondCount"
+).value
 );
 
-let designStyle=
-document.getElementById("style").value;
+let style=
+document.getElementById(
+"style"
+).value;
+
 
 let radius=
-2.65+(size-2.5)*1.15;
+2.65+
+(size-2.5)*1.15;
 
 
-/* MAIN GOLD BODY */
+/*
+   MAIN BODY
+*/
 
 let bangle=
 new THREE.Mesh(
 
 new THREE.TorusGeometry(
+
 radius,
+
 thickness,
+
 48,
+
 180
+
 ),
 
 getMetal()
@@ -625,66 +1206,125 @@ getMetal()
 bangle.rotation.x=
 Math.PI/2;
 
-jewelleryGroup.add(bangle);
+jewelleryGroup.add(
+bangle
+);
 
 
-/* TOP RAIL */
+/*
+   SIDE RAILS
+*/
 
-if(designStyle!=="classic"){
+if(style!=="classic"){
 
-let rail=
+let rail1=
 new THREE.Mesh(
 
 new THREE.TorusGeometry(
+
 radius,
-thickness*.18,
+
+thickness*.16,
+
 20,
+
 180
+
 ),
 
 getMetal()
 
 );
 
-rail.rotation.x=
+rail1.rotation.x=
 Math.PI/2;
 
-rail.position.y=
-thickness*.78;
+rail1.position.y=
+thickness*.65;
 
-jewelleryGroup.add(rail);
+jewelleryGroup.add(
+rail1
+);
+
+
+let rail2=
+new THREE.Mesh(
+
+new THREE.TorusGeometry(
+
+radius,
+
+thickness*.12,
+
+20,
+
+180
+
+),
+
+getMetal()
+
+);
+
+rail2.rotation.x=
+Math.PI/2;
+
+rail2.position.y=
+-thickness*.48;
+
+jewelleryGroup.add(
+rail2
+);
 
 }
 
 
-/* STONES */
+/*
+   DIAMONDS
+*/
 
 if(
-document.getElementById("stone").value!=="none"
-&& count>0
+document.getElementById(
+"stone"
+).value!=="none"
+&&
+count>0
 ){
 
-if(designStyle==="pave"){
+if(style==="pave"){
 
-createPaveBangle(
+createPavePattern(
 radius,
 thickness,
 count
 );
 
-}else{
+}
 
-for(let i=0;i<count;i++){
+else{
+
+for(
+let i=0;
+i<count;
+i++
+){
 
 let angle=
-(i/count)*Math.PI*2;
+(i/count)*
+Math.PI*2;
 
-createSetting(
+createProfessionalSetting(
+
 Math.cos(angle)*radius,
+
 0,
+
 Math.sin(angle)*radius,
+
 angle,
+
 thickness
+
 );
 
 }
@@ -696,11 +1336,11 @@ thickness
 }
 
 
-/* =========================
-   PAVE
-========================= */
+/* =====================================
+   PAVÉ
+===================================== */
 
-function createPaveBangle(
+function createPavePattern(
 radius,
 thickness,
 count
@@ -708,34 +1348,41 @@ count
 
 let rows=2;
 
-let total=count;
-
-for(let i=0;i<total;i++){
+for(
+let i=0;
+i<count;
+i++
+){
 
 let angle=
-(i/total)*Math.PI*2;
+(i/count)*
+Math.PI*2;
 
 let row=
 i%rows;
 
 let offset=
-(row===0?-0.075:0.075);
+row===0
+?
+-.075
+:
+.075;
 
 let r=
 radius+offset;
 
-let x=
-Math.cos(angle)*r;
-
-let z=
-Math.sin(angle)*r;
-
 createPaveStone(
-x,
+
+Math.cos(angle)*r,
+
 0,
-z,
+
+Math.sin(angle)*r,
+
 angle,
+
 thickness
+
 );
 
 }
@@ -743,12 +1390,16 @@ thickness
 }
 
 
-/* =========================
-   PAVE STONE
-========================= */
+/* =====================================
+   PAVÉ STONE
+===================================== */
 
 function createPaveStone(
-x,y,z,angle,thickness
+x,
+y,
+z,
+angle,
+thickness
 ){
 
 let group=
@@ -757,14 +1408,19 @@ new THREE.Group();
 let metal=
 getMetal();
 
+
+/*
+   BASE
+*/
+
 let base=
 new THREE.Mesh(
 
 new THREE.CylinderGeometry(
 .075,
-.09,
-.045,
-20
+.10,
+.055,
+24
 ),
 
 metal
@@ -774,32 +1430,43 @@ metal
 base.position.y=
 thickness+.025;
 
-group.add(base);
+group.add(
+base
+);
 
+
+/*
+   DIAMOND
+*/
 
 let diamond=
 new THREE.Mesh(
 
-new THREE.OctahedronGeometry(
-.115,
-1
+createBrilliantDiamond(
+.115
 ),
 
 getDiamondMaterial()
 
 );
 
-diamond.scale.y=1.12;
-
 diamond.position.y=
 thickness+.12;
 
-group.add(diamond);
+group.add(
+diamond
+);
 
 
-/* SMALL PRONGS */
+/*
+   PRONGS
+*/
 
-for(let i=0;i<4;i++){
+for(
+let i=0;
+i<4;
+i++
+){
 
 let a=
 i*Math.PI/2+
@@ -810,8 +1477,8 @@ new THREE.Mesh(
 
 new THREE.CylinderGeometry(
 .014,
-.019,
-.11,
+.020,
+.12,
 8
 ),
 
@@ -820,34 +1487,48 @@ metal
 );
 
 prong.position.set(
+
 Math.cos(a)*.075,
+
 thickness+.075,
+
 Math.sin(a)*.075
+
 );
 
-group.add(prong);
+group.add(
+prong
+);
 
 }
 
 
 group.position.set(
-x,y,z
+x,
+y,
+z
 );
 
 group.rotation.y=
 -angle;
 
-stoneGroup.add(group);
+stoneGroup.add(
+group
+);
 
 }
 
 
-/* =========================
-   STANDARD SETTING
-========================= */
+/* =====================================
+   PROFESSIONAL SETTING
+===================================== */
 
-function createSetting(
-x,y,z,angle,thickness
+function createProfessionalSetting(
+x,
+y,
+z,
+angle,
+thickness
 ){
 
 let group=
@@ -857,16 +1538,23 @@ let metal=
 getMetal();
 
 
-/* SETTING CUP */
+/*
+   SETTING CUP
+*/
 
 let cup=
 new THREE.Mesh(
 
 new THREE.CylinderGeometry(
-.12,
-.145,
-.065,
-24
+
+.13,
+
+.155,
+
+.075,
+
+32
+
 ),
 
 metal
@@ -876,45 +1564,100 @@ metal
 cup.position.y=
 thickness+.035;
 
-group.add(cup);
+group.add(
+cup
+);
 
 
-/* DIAMOND SIZE */
+/*
+   INNER SEAT
+*/
+
+let seat=
+new THREE.Mesh(
+
+new THREE.CylinderGeometry(
+
+.105,
+
+.105,
+
+.025,
+
+24
+
+),
+
+metal
+
+);
+
+seat.position.y=
+thickness+.09;
+
+group.add(
+seat
+);
+
+
+/*
+   DIAMOND SIZE
+*/
 
 let size=
-document.getElementById("diamondSize").value;
+document.getElementById(
+"diamondSize"
+).value;
 
 let d=.17;
 
-if(size==="small") d=.13;
-if(size==="large") d=.21;
+
+if(size==="small"){
+
+d=.13;
+
+}
 
 
-/* DIAMOND */
+if(size==="large"){
+
+d=.22;
+
+}
+
+
+/*
+   BRILLIANT DIAMOND
+*/
 
 let diamond=
 new THREE.Mesh(
 
-new THREE.OctahedronGeometry(
-d,
-2
+createBrilliantDiamond(
+d
 ),
 
 getDiamondMaterial()
 
 );
 
-diamond.scale.y=1.18;
-
 diamond.position.y=
-thickness+.19;
+thickness+.18;
 
-group.add(diamond);
+group.add(
+diamond
+);
 
 
-/* 4 PRONGS */
+/*
+   FOUR PRONGS
+*/
 
-for(let i=0;i<4;i++){
+for(
+let i=0;
+i<4;
+i++
+){
 
 let a=
 i*Math.PI/2+
@@ -926,14 +1669,20 @@ Math.cos(a)*d*.78;
 let pz=
 Math.sin(a)*d*.78;
 
+
 let prong=
 new THREE.Mesh(
 
 new THREE.CylinderGeometry(
+
 .018,
-.026,
-.18,
+
+.027,
+
+.20,
+
 10
+
 ),
 
 metal
@@ -941,31 +1690,53 @@ metal
 );
 
 prong.position.set(
+
 px,
-thickness+.12,
+
+thickness+.125,
+
 pz
+
 );
 
-group.add(prong);
+group.add(
+prong
+);
 
 }
 
 
-/* TWO SUPPORT SHOULDERS */
+/*
+   SHOULDER SUPPORTS
+*/
 
-for(let i=0;i<2;i++){
+for(
+let i=0;
+i<2;
+i++
+){
 
 let side=
-i===0?-1:1;
+i===0
+?
+-1
+:
+1;
+
 
 let support=
 new THREE.Mesh(
 
 new THREE.CylinderGeometry(
+
 .022,
+
 .032,
-.14,
+
+.15,
+
 10
+
 ),
 
 metal
@@ -976,47 +1747,69 @@ support.rotation.z=
 side*.48;
 
 support.position.set(
-side*.10,
+
+side*.105,
+
 thickness+.09,
+
 0
+
 );
 
-group.add(support);
+group.add(
+support
+);
 
 }
 
 
+/*
+   POSITION
+*/
+
 group.position.set(
-x,y,z
+x,
+y,
+z
 );
 
 group.rotation.y=
 -angle;
 
-stoneGroup.add(group);
+stoneGroup.add(
+group
+);
 
 }
 
 
-/* =========================
+/* =====================================
    RING
-========================= */
+===================================== */
 
 function createRing(){
 
 let thickness=
 parseFloat(
-document.getElementById("thickness").value
+document.getElementById(
+"thickness"
+).value
 );
+
 
 let ring=
 new THREE.Mesh(
 
 new THREE.TorusGeometry(
+
 1.75,
+
 thickness,
+
 40,
+
 140
+
 ),
 
 getMetal()
@@ -1026,59 +1819,74 @@ getMetal()
 ring.rotation.x=
 Math.PI/2;
 
-jewelleryGroup.add(ring);
+jewelleryGroup.add(
+ring
+);
 
 
 if(
-document.getElementById("stone").value!=="none"
+document.getElementById(
+"stone"
+).value!=="none"
 ){
 
-let group=
+let setting=
 new THREE.Group();
+
+let metal=
+getMetal();
+
 
 let base=
 new THREE.Mesh(
 
 new THREE.CylinderGeometry(
-.28,
-.34,
-.10,
+.30,
+.36,
+.11,
 32
 ),
 
-getMetal()
+metal
 
 );
 
 base.position.y=
 thickness+.20;
 
-group.add(base);
+setting.add(
+base
+);
 
 
 let diamond=
 new THREE.Mesh(
 
-new THREE.OctahedronGeometry(
-.42,
-2
+createBrilliantDiamond(
+.42
 ),
 
 getDiamondMaterial()
 
 );
 
-diamond.scale.y=1.15;
-
 diamond.position.y=
-thickness+.52;
+thickness+.55;
 
-group.add(diamond);
+setting.add(
+diamond
+);
 
 
-/* PRONGS */
+/*
+   RING PRONGS
+*/
 
-for(let i=0;i<4;i++){
+for(
+let i=0;
+i<4;
+i++
+){
 
 let a=
 i*Math.PI/2+
@@ -1088,54 +1896,76 @@ let p=
 new THREE.Mesh(
 
 new THREE.CylinderGeometry(
+
 .025,
+
 .035,
-.32,
+
+.34,
+
 10
+
 ),
 
-getMetal()
+metal
 
 );
 
 p.position.set(
+
 Math.cos(a)*.28,
+
 thickness+.40,
+
 Math.sin(a)*.28
+
 );
 
-group.add(p);
-
-}
-
-stoneGroup.add(group);
-
-}
+setting.add(
+p
+);
 
 }
 
 
-/* =========================
+stoneGroup.add(
+setting
+);
+
+}
+
+}
+
+
+/* =====================================
    BRACELET
-========================= */
+===================================== */
 
 function createBracelet(){
 
 let thickness=
 parseFloat(
-document.getElementById("thickness").value
+document.getElementById(
+"thickness"
+).value
 );
 
 let radius=2.7;
+
 
 let bracelet=
 new THREE.Mesh(
 
 new THREE.TorusGeometry(
+
 radius,
+
 thickness,
+
 40,
+
 150
+
 ),
 
 getMetal()
@@ -1145,29 +1975,48 @@ getMetal()
 bracelet.rotation.x=
 Math.PI/2;
 
-jewelleryGroup.add(bracelet);
+jewelleryGroup.add(
+bracelet
+);
 
 
 let count=
 parseInt(
-document.getElementById("diamondCount").value
+document.getElementById(
+"diamondCount"
+).value
 );
+
 
 if(
-document.getElementById("stone").value!=="none"
+document.getElementById(
+"stone"
+).value!=="none"
 ){
 
-for(let i=0;i<count;i++){
+for(
+let i=0;
+i<count;
+i++
+){
 
 let angle=
-(i/count)*Math.PI*2;
+(i/count)*
+Math.PI*2;
 
-createSetting(
+
+createProfessionalSetting(
+
 Math.cos(angle)*radius,
+
 0,
+
 Math.sin(angle)*radius,
+
 angle,
+
 thickness
+
 );
 
 }
@@ -1177,44 +2026,65 @@ thickness
 }
 
 
-/* =========================
+/* =====================================
    NECKLACE
-========================= */
+===================================== */
 
 function createNecklace(){
 
 let curve=
 new THREE.EllipseCurve(
+
 0,
 0,
+
 3.2,
 2.25,
+
 0,
 Math.PI*2,
+
 false,
 0
+
 );
 
+
 let points=
-curve.getPoints(140);
+curve.getPoints(
+140
+);
 
 let vectors=[];
 
-for(let p of points){
+
+for(
+let p of points
+){
 
 vectors.push(
+
 new THREE.Vector3(
+
 p.x,
+
 0,
+
 p.y
+
 )
+
 );
 
 }
 
+
 let geometry=
 new THREE.BufferGeometry()
-.setFromPoints(vectors);
+.setFromPoints(
+vectors
+);
+
 
 let line=
 new THREE.LineLoop(
@@ -1222,24 +2092,34 @@ new THREE.LineLoop(
 geometry,
 
 new THREE.LineBasicMaterial({
+
 color:getMetal().color
+
 })
 
 );
 
-jewelleryGroup.add(line);
 
+jewelleryGroup.add(
+line
+);
+
+
+/*
+   PENDANT
+*/
 
 if(
-document.getElementById("stone").value!=="none"
+document.getElementById(
+"stone"
+).value!=="none"
 ){
 
 let pendant=
 new THREE.Mesh(
 
-new THREE.OctahedronGeometry(
-.55,
-2
+createBrilliantDiamond(
+.55
 ),
 
 getDiamondMaterial()
@@ -1247,37 +2127,51 @@ getDiamondMaterial()
 );
 
 pendant.position.set(
+
 0,
+
 0,
+
 2.25
+
 );
 
-stoneGroup.add(pendant);
+stoneGroup.add(
+pendant
+);
 
 }
 
 }
 
 
-/* =========================
+/* =====================================
    EARRING
-========================= */
+===================================== */
 
 function createEarring(){
 
 let thickness=
 parseFloat(
-document.getElementById("thickness").value
+document.getElementById(
+"thickness"
+).value
 );
+
 
 let hoop=
 new THREE.Mesh(
 
 new THREE.TorusGeometry(
+
 1.4,
+
 thickness,
+
 36,
+
 110
+
 ),
 
 getMetal()
@@ -1287,19 +2181,22 @@ getMetal()
 hoop.rotation.x=
 Math.PI/2;
 
-jewelleryGroup.add(hoop);
+jewelleryGroup.add(
+hoop
+);
 
 
 if(
-document.getElementById("stone").value!=="none"
+document.getElementById(
+"stone"
+).value!=="none"
 ){
 
 let diamond=
 new THREE.Mesh(
 
-new THREE.OctahedronGeometry(
-.38,
-2
+createBrilliantDiamond(
+.38
 ),
 
 getDiamondMaterial()
@@ -1309,16 +2206,18 @@ getDiamondMaterial()
 diamond.position.y=
 thickness+.45;
 
-stoneGroup.add(diamond);
+stoneGroup.add(
+diamond
+);
 
 }
 
 }
 
 
-/* =========================
-   SHOW / HIDE
-========================= */
+/* =====================================
+   STONE TOGGLE
+===================================== */
 
 function toggleStones(){
 
@@ -1328,8 +2227,11 @@ stonesVisible=
 stoneGroup.visible=
 stonesVisible;
 
-document.getElementById("status")
-.innerText=
+
+document.getElementById(
+"status"
+).innerText=
+
 stonesVisible
 ?
 "Stones Visible"
@@ -1339,161 +2241,161 @@ stonesVisible
 }
 
 
-/* =========================
+/* =====================================
    RESET
-========================= */
+===================================== */
 
 function resetCAD(){
 
-document.getElementById("type")
-.value="bangle";
+document.getElementById(
+"type"
+).value=
+"bangle";
 
-document.getElementById("metal")
-.value="yellow";
+document.getElementById(
+"metal"
+).value=
+"yellow";
 
-document.getElementById("stone")
-.value="diamond";
+document.getElementById(
+"stone"
+).value=
+"diamond";
 
-document.getElementById("style")
-.value="classic";
+document.getElementById(
+"style"
+).value=
+"classic";
 
-document.getElementById("size")
-.value="2.5";
+document.getElementById(
+"size"
+).value=
+"2.5";
 
-document.getElementById("thickness")
-.value="0.28";
+document.getElementById(
+"thickness"
+).value=
+"0.28";
 
-document.getElementById("thicknessValue")
-.innerText="0.28";
+document.getElementById(
+"thicknessValue"
+).innerText=
+"0.28";
 
-document.getElementById("diamondCount")
-.value="24";
+document.getElementById(
+"diamondCount"
+).value=
+"24";
 
-document.getElementById("diamondValue")
-.innerText="24";
+document.getElementById(
+"diamondValue"
+).innerText=
+"24";
 
-document.getElementById("diamondSize")
-.value="medium";
+document.getElementById(
+"diamondSize"
+).value=
+"medium";
+
 
 stonesVisible=true;
 
 stoneGroup.visible=true;
+
+resetView();
 
 generateCAD();
 
 }
 
 
-/* =========================
-   PHOTO PREVIEW
-========================= */
+/* =====================================
+   FRONT VIEW
+===================================== */
 
-document.getElementById("reference")
-.addEventListener(
-"change",
-function(){
+function frontView(){
 
-let file=this.files[0];
-
-if(!file)return;
-
-let url=
-URL.createObjectURL(file);
-
-let img=
-document.getElementById("preview");
-
-img.src=url;
-
-img.style.display="block";
-
-}
+camera.position.set(
+0,
+0,
+9
 );
 
-
-/* =========================
-   RESIZE
-========================= */
-
-function onResize(){
-
-let viewer=
-document.getElementById("viewer");
-
-let w=
-viewer.clientWidth;
-
-let h=
-viewer.clientHeight;
-
-camera.aspect=
-w/h;
-
-camera.updateProjectionMatrix();
-
-renderer.setSize(
-w,
-h
+camera.lookAt(
+0,
+0,
+0
 );
 
-}
-
-
-/* =========================
-   ANIMATION
-========================= */
-
-function animate(){
-
-requestAnimationFrame(
-animate
+controls.target.set(
+0,
+0,
+0
 );
 
-if(controls){
 controls.update();
+
 }
 
-if(renderer && scene && camera){
 
-renderer.render(
-scene,
-camera
+/* =====================================
+   TOP VIEW
+===================================== */
+
+function topView(){
+
+camera.position.set(
+0,
+9,
+0
 );
 
-}
+camera.lookAt(
+0,
+0,
+0
+);
+
+controls.target.set(
+0,
+0,
+0
+);
+
+controls.update();
 
 }
 
 
-/* =========================
-   ERROR
-========================= */
+/* =====================================
+   3D VIEW
+===================================== */
 
-function showError(e){
+function resetView(){
 
-let error=
-document.getElementById("error");
+camera.position.set(
+0,
+4.8,
+8
+);
 
-error.style.display="block";
+camera.lookAt(
+0,
+0,
+0
+);
 
-error.innerText=
-"CAD Error: "+e.message;
+controls.target.set(
+0,
+0,
+0
+);
 
-document.getElementById("status")
-.innerText="Error";
-
-console.error(e);
+controls.update();
 
 }
 
 
-/* =========================
-   START
-========================= */
-
-init();
-
-</script>
-
-</body>
- </html>
+/* =====================================
+   REFERENCE PHOTO
+=======================
