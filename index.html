@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jewellery CAD V1</title>
+<title>Jewellery CAD AI V1.1</title>
 
 <style>
 *{box-sizing:border-box}
+
 body{
   margin:0;
   background:#111318;
@@ -14,6 +15,7 @@ body{
   font-family:Arial,sans-serif;
   overflow:hidden;
 }
+
 header{
   height:60px;
   display:flex;
@@ -23,46 +25,124 @@ header{
   background:#191c24;
   border-bottom:1px solid #333;
 }
-header h2{margin:0;font-size:20px}
+
+header h2{
+  margin:0;
+  font-size:20px;
+}
+
+header span{
+  color:#aaa;
+  font-size:13px;
+}
+
 #viewer{
   width:100vw;
   height:calc(100vh - 60px);
 }
+
 .panel{
   position:fixed;
   left:12px;
   top:72px;
-  width:210px;
+  width:245px;
+  max-height:calc(100vh - 85px);
+  overflow-y:auto;
   padding:15px;
-  background:rgba(25,28,36,.94);
+  background:rgba(25,28,36,.96);
   border:1px solid #444;
   border-radius:14px;
   z-index:10;
+  box-shadow:0 8px 30px rgba(0,0,0,.35);
 }
-.panel h3{margin:0 0 14px}
+
+.panel h3{
+  margin:0 0 14px;
+}
+
 label{
   display:block;
   font-size:13px;
   margin-top:12px;
   color:#bbb;
 }
+
+select,
+input[type=file]{
+  width:100%;
+  margin-top:6px;
+  padding:9px;
+  border-radius:8px;
+  border:1px solid #555;
+  background:#20242e;
+  color:white;
+}
+
 input[type=range]{
   width:100%;
 }
+
 button{
   width:100%;
   margin-top:12px;
-  padding:10px;
+  padding:11px;
   border:0;
   border-radius:9px;
   background:#444b5a;
   color:white;
   font-weight:bold;
+  cursor:pointer;
 }
-button:active{transform:scale(.98)}
+
+button:active{
+  transform:scale(.98);
+}
+
+.generate{
+  background:#8c6a19;
+  font-size:14px;
+}
+
 .value{
   float:right;
   color:#fff;
+}
+
+#preview{
+  width:100%;
+  max-height:120px;
+  object-fit:contain;
+  margin-top:10px;
+  border-radius:9px;
+  display:none;
+  border:1px solid #555;
+}
+
+.status{
+  margin-top:10px;
+  padding:9px;
+  border-radius:8px;
+  background:#20242e;
+  color:#aaa;
+  font-size:12px;
+  line-height:1.4;
+}
+
+@media(max-width:600px){
+  .panel{
+    width:210px;
+    left:8px;
+    top:68px;
+    padding:12px;
+  }
+
+  header h2{
+    font-size:16px;
+  }
+
+  header span{
+    display:none;
+  }
 }
 </style>
 </head>
@@ -70,44 +150,125 @@ button:active{transform:scale(.98)}
 <body>
 
 <header>
-  <h2>💎 Jewellery CAD V1</h2>
-  <span>3D Designer</span>
+  <h2>💎 Jewellery CAD AI V1.1</h2>
+  <span>3D Jewellery Designer</span>
 </header>
 
 <div class="panel">
-  <h3>💍 Bangle Controls</h3>
+
+  <h3>✨ CAD Controls</h3>
+
+  <label>Reference Photo</label>
+  <input
+    id="photo"
+    type="file"
+    accept="image/*"
+  >
+
+  <img id="preview">
+
+  <label>Jewellery Type</label>
+  <select id="jewelleryType">
+    <option value="bangle">Bangle</option>
+    <option value="ring">Ring</option>
+    <option value="bracelet">Bracelet</option>
+    <option value="necklace">Necklace</option>
+    <option value="earring">Earring</option>
+  </select>
+
+  <label>Metal</label>
+  <select id="metal">
+    <option value="yellow">Yellow Gold</option>
+    <option value="white">White Gold</option>
+    <option value="rose">Rose Gold</option>
+  </select>
+
+  <label>Stone</label>
+  <select id="stoneType">
+    <option value="diamond">Diamond</option>
+    <option value="solitaire">Solitaire</option>
+    <option value="none">None</option>
+  </select>
 
   <label>
     Size
     <span class="value" id="sizeValue">3.0</span>
   </label>
-  <input id="size" type="range" min="2.3" max="4.2" step="0.1" value="3">
+
+  <input
+    id="size"
+    type="range"
+    min="2.3"
+    max="4.2"
+    step="0.1"
+    value="3"
+  >
 
   <label>
     Thickness
     <span class="value" id="thickValue">0.22</span>
   </label>
-  <input id="thickness" type="range" min="0.12" max="0.45" step="0.01" value="0.22">
+
+  <input
+    id="thickness"
+    type="range"
+    min="0.12"
+    max="0.45"
+    step="0.01"
+    value="0.22"
+  >
 
   <label>
-    Diamonds
+    Stones
     <span class="value" id="diamondValue">24</span>
   </label>
-  <input id="diamonds" type="range" min="8" max="48" step="1" value="24">
 
-  <button onclick="resetView()">Reset View</button>
-  <button onclick="toggleDiamonds()">Show / Hide Stones</button>
+  <input
+    id="diamonds"
+    type="range"
+    min="8"
+    max="48"
+    step="1"
+    value="24"
+  >
+
+  <button
+    class="generate"
+    onclick="generateCAD()"
+  >
+    ✨ Generate CAD Concept
+  </button>
+
+  <button onclick="resetView()">
+    🔄 Reset View
+  </button>
+
+  <button onclick="toggleDiamonds()">
+    👁️ Show / Hide Stones
+  </button>
+
+  <div class="status" id="status">
+    Ready — Upload a jewellery reference photo and generate a concept.
+  </div>
+
 </div>
 
 <div id="viewer"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
 
 <script>
 
-let scene, camera, renderer, controls;
-let bangle, stones=[];
+let scene;
+let camera;
+let renderer;
+let controls;
+
+let bangle;
+let stones=[];
+
 let showStones=true;
 
 const params={
@@ -119,10 +280,14 @@ const params={
 init();
 createBangle();
 
+
 function init(){
 
   scene=new THREE.Scene();
-  scene.background=new THREE.Color(0x111318);
+
+  scene.background=
+    new THREE.Color(0x111318);
+
 
   camera=new THREE.PerspectiveCamera(
     45,
@@ -131,175 +296,498 @@ function init(){
     100
   );
 
-  camera.position.set(0,3.2,7);
+
+  camera.position.set(
+    0,
+    3.2,
+    7
+  );
+
 
   renderer=new THREE.WebGLRenderer({
     antialias:true
   });
 
-  renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(window.innerWidth,window.innerHeight-60);
 
-  document.getElementById("viewer").appendChild(renderer.domElement);
+  renderer.setPixelRatio(
+    window.devicePixelRatio
+  );
 
-  const ambient=new THREE.AmbientLight(0xffffff,.8);
+
+  renderer.setSize(
+    window.innerWidth,
+    window.innerHeight-60
+  );
+
+
+  document
+    .getElementById("viewer")
+    .appendChild(renderer.domElement);
+
+
+  const ambient=
+    new THREE.AmbientLight(
+      0xffffff,
+      .8
+    );
+
   scene.add(ambient);
 
-  const light1=new THREE.DirectionalLight(0xffffff,2);
-  light1.position.set(5,6,5);
+
+  const light1=
+    new THREE.DirectionalLight(
+      0xffffff,
+      2
+    );
+
+  light1.position.set(
+    5,
+    6,
+    5
+  );
+
   scene.add(light1);
 
-  const light2=new THREE.DirectionalLight(0xffffff,1);
-  light2.position.set(-5,2,-4);
+
+  const light2=
+    new THREE.DirectionalLight(
+      0xffffff,
+      1
+    );
+
+  light2.position.set(
+    -5,
+    2,
+    -4
+  );
+
   scene.add(light2);
 
-  controls=new THREE.OrbitControls(
-    camera,
-    renderer.domElement
-  );
+
+  controls=
+    new THREE.OrbitControls(
+      camera,
+      renderer.domElement
+    );
+
 
   controls.enableDamping=true;
 
-  window.addEventListener("resize",resize);
+
+  window.addEventListener(
+    "resize",
+    resize
+  );
+
 
   animate();
 }
 
+
+function getMetalColor(){
+
+  const metal=
+    document.getElementById("metal").value;
+
+
+  if(metal==="white"){
+    return 0xd9dde2;
+  }
+
+  if(metal==="rose"){
+    return 0xb76e79;
+  }
+
+  return 0xd4af37;
+}
+
+
 function createBangle(){
 
-  if(bangle) scene.remove(bangle);
+  if(bangle){
+    scene.remove(bangle);
+  }
 
-  stones.forEach(s=>scene.remove(s));
+
+  stones.forEach(
+    s=>scene.remove(s)
+  );
+
+
   stones=[];
+
 
   bangle=new THREE.Group();
 
+
   const radius=params.size;
+
   const tube=params.thickness;
 
-  const metalMaterial=new THREE.MeshStandardMaterial({
-    color:0xd4af37,
-    metalness:.9,
-    roughness:.18
-  });
 
-  const ringGeometry=new THREE.TorusGeometry(
-    radius,
-    tube,
-    32,
-    128
-  );
+  const metalMaterial=
+    new THREE.MeshStandardMaterial({
 
-  const ring=new THREE.Mesh(
-    ringGeometry,
-    metalMaterial
-  );
+      color:getMetalColor(),
 
-  ring.rotation.x=Math.PI/2;
+      metalness:.9,
+
+      roughness:.18
+
+    });
+
+
+  const ringGeometry=
+    new THREE.TorusGeometry(
+      radius,
+      tube,
+      32,
+      128
+    );
+
+
+  const ring=
+    new THREE.Mesh(
+      ringGeometry,
+      metalMaterial
+    );
+
+
+  ring.rotation.x=
+    Math.PI/2;
+
 
   bangle.add(ring);
 
-  createDiamonds(radius,tube);
+
+  createDiamonds(
+    radius,
+    tube
+  );
+
 
   scene.add(bangle);
 }
 
-function createDiamonds(radius,tube){
 
-  const diamondMaterial=new THREE.MeshPhysicalMaterial({
-    color:0xffffff,
-    metalness:0,
-    roughness:.05,
-    transmission:.5,
-    transparent:true,
-    opacity:.95
-  });
+function createDiamonds(
+  radius,
+  tube
+){
 
-  const geo=new THREE.OctahedronGeometry(
-    tube*.75,
-    1
-  );
+  const stoneType=
+    document.getElementById(
+      "stoneType"
+    ).value;
 
-  for(let i=0;i<params.diamonds;i++){
 
-    const angle=(i/params.diamonds)*Math.PI*2;
+  if(stoneType==="none"){
+    return;
+  }
 
-    const x=Math.cos(angle)*radius;
-    const z=Math.sin(angle)*radius;
 
-    const stone=new THREE.Mesh(
-      geo,
-      diamondMaterial
+  const diamondMaterial=
+    new THREE.MeshPhysicalMaterial({
+
+      color:0xffffff,
+
+      metalness:0,
+
+      roughness:.05,
+
+      transmission:.5,
+
+      transparent:true,
+
+      opacity:.95
+
+    });
+
+
+  const geo=
+    new THREE.OctahedronGeometry(
+      tube*.75,
+      1
     );
 
-    stone.position.set(x,0,z);
 
-    stone.rotation.y=-angle;
+  for(
+    let i=0;
+    i<params.diamonds;
+    i++
+  ){
+
+    const angle=
+      (i/params.diamonds)
+      *Math.PI*2;
+
+
+    const x=
+      Math.cos(angle)
+      *radius;
+
+
+    const z=
+      Math.sin(angle)
+      *radius;
+
+
+    const stone=
+      new THREE.Mesh(
+        geo,
+        diamondMaterial
+      );
+
+
+    stone.position.set(
+      x,
+      0,
+      z
+    );
+
+
+    stone.rotation.y=
+      -angle;
+
 
     bangle.add(stone);
+
     stones.push(stone);
+
   }
 }
 
+
 function updateBangle(){
 
-  params.size=parseFloat(
-    document.getElementById("size").value
-  );
+  params.size=
+    parseFloat(
+      document.getElementById(
+        "size"
+      ).value
+    );
 
-  params.thickness=parseFloat(
-    document.getElementById("thickness").value
-  );
 
-  params.diamonds=parseInt(
-    document.getElementById("diamonds").value
-  );
+  params.thickness=
+    parseFloat(
+      document.getElementById(
+        "thickness"
+      ).value
+    );
 
-  document.getElementById("sizeValue").textContent=
+
+  params.diamonds=
+    parseInt(
+      document.getElementById(
+        "diamonds"
+      ).value
+    );
+
+
+  document
+    .getElementById(
+      "sizeValue"
+    )
+    .textContent=
     params.size.toFixed(1);
 
-  document.getElementById("thickValue").textContent=
+
+  document
+    .getElementById(
+      "thickValue"
+    )
+    .textContent=
     params.thickness.toFixed(2);
 
-  document.getElementById("diamondValue").textContent=
+
+  document
+    .getElementById(
+      "diamondValue"
+    )
+    .textContent=
     params.diamonds;
+
 
   createBangle();
 }
 
-document.getElementById("size")
-.addEventListener("input",updateBangle);
 
-document.getElementById("thickness")
-.addEventListener("input",updateBangle);
+document
+  .getElementById("size")
+  .addEventListener(
+    "input",
+    updateBangle
+  );
 
-document.getElementById("diamonds")
-.addEventListener("input",updateBangle);
+
+document
+  .getElementById("thickness")
+  .addEventListener(
+    "input",
+    updateBangle
+  );
+
+
+document
+  .getElementById("diamonds")
+  .addEventListener(
+    "input",
+    updateBangle
+  );
+
+
+document
+  .getElementById("metal")
+  .addEventListener(
+    "change",
+    createBangle
+  );
+
+
+document
+  .getElementById("stoneType")
+  .addEventListener(
+    "change",
+    createBangle
+  );
+
 
 function toggleDiamonds(){
 
-  showStones=!showStones;
+  showStones=
+    !showStones;
+
 
   stones.forEach(
-    stone=>stone.visible=showStones
+    stone=>{
+      stone.visible=
+        showStones;
+    }
   );
 }
 
+
 function resetView(){
 
-  camera.position.set(0,3.2,7);
+  camera.position.set(
+    0,
+    3.2,
+    7
+  );
 
-  controls.target.set(0,0,0);
+
+  controls.target.set(
+    0,
+    0,
+    0
+  );
+
 
   controls.update();
 }
 
+
+function generateCAD(){
+
+  const type=
+    document.getElementById(
+      "jewelleryType"
+    ).value;
+
+
+  const metal=
+    document.getElementById(
+      "metal"
+    ).value;
+
+
+  const stone=
+    document.getElementById(
+      "stoneType"
+    ).value;
+
+
+  const status=
+    document.getElementById(
+      "status"
+    );
+
+
+  if(type!=="bangle"){
+
+    status.innerHTML=
+      "✨ Concept generator ready for " +
+      type +
+      ". Current 3D engine displays the Bangle CAD prototype.";
+
+    return;
+  }
+
+
+  createBangle();
+
+
+  status.innerHTML=
+    "✅ CAD Concept generated: " +
+    "Bangle • " +
+    metal +
+    " • " +
+    stone +
+    " • " +
+    params.diamonds +
+    " stones";
+}
+
+
+document
+  .getElementById("photo")
+  .addEventListener(
+    "change",
+    function(){
+
+      const file=
+        this.files[0];
+
+
+      if(!file){
+        return;
+      }
+
+
+      const url=
+        URL.createObjectURL(file);
+
+
+      const preview=
+        document.getElementById(
+          "preview"
+        );
+
+
+      preview.src=url;
+
+      preview.style.display=
+        "block";
+
+
+      document
+        .getElementById("status")
+        .innerHTML=
+        "📷 Reference image loaded. Now select your jewellery options and press Generate CAD Concept.";
+
+    }
+  );
+
+
 function resize(){
 
   camera.aspect=
-    window.innerWidth/window.innerHeight;
+    window.innerWidth/
+    window.innerHeight;
+
 
   camera.updateProjectionMatrix();
+
 
   renderer.setSize(
     window.innerWidth,
@@ -307,13 +795,21 @@ function resize(){
   );
 }
 
+
 function animate(){
 
-  requestAnimationFrame(animate);
+  requestAnimationFrame(
+    animate
+  );
+
 
   controls.update();
 
-  renderer.render(scene,camera);
+
+  renderer.render(
+    scene,
+    camera
+  );
 }
 
 </script>
