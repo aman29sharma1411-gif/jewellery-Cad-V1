@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Jewellery CAD AI V2.8</title>
+<title>Jewellery CAD AI V2.9</title>
 
 <style>
 *{
@@ -28,9 +28,7 @@ header{
 }
 
 .app{
-  display:flex;
-  flex-direction:column;
-  min-height:calc(100vh - 55px);
+  min-height:100vh;
 }
 
 .controls{
@@ -94,8 +92,8 @@ button:active{
 
 .viewer{
   position:relative;
-  height:58vh;
-  min-height:400px;
+  height:55vh;
+  min-height:360px;
   background:#050505;
   overflow:hidden;
 }
@@ -103,6 +101,18 @@ button:active{
 #canvas{
   width:100%;
   height:100%;
+}
+
+.status{
+  position:absolute;
+  top:10px;
+  left:10px;
+  z-index:5;
+  background:rgba(0,0,0,.7);
+  padding:7px 10px;
+  border-radius:7px;
+  font-size:12px;
+  color:#aaa;
 }
 
 .reference{
@@ -123,36 +133,58 @@ button:active{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:7px;
-  margin-top:5px;
 }
 
-.small-buttons{
+.two{
   display:grid;
   grid-template-columns:repeat(2,1fr);
   gap:7px;
 }
 
-.status{
-  position:absolute;
-  top:10px;
-  left:10px;
-  z-index:5;
-  background:rgba(0,0,0,.65);
-  padding:7px 10px;
-  border-radius:7px;
-  font-size:12px;
-  color:#aaa;
+.infoPanel{
+  background:#111;
+  padding:12px;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+}
+
+.info{
+  background:#191919;
+  border:1px solid #333;
+  border-radius:9px;
+  padding:10px;
+}
+
+.infoTitle{
+  font-size:11px;
+  color:#888;
+}
+
+.infoValue{
+  font-size:16px;
+  font-weight:bold;
+  margin-top:4px;
+}
+
+.note{
+  padding:10px 12px;
+  background:#101010;
+  color:#888;
+  font-size:11px;
+  line-height:1.5;
 }
 
 @media(max-width:600px){
+
   .controls{
     grid-template-columns:1fr 1fr;
   }
 
   .viewer{
-    height:55vh;
-    min-height:350px;
+    height:52vh;
   }
+
 }
 </style>
 </head>
@@ -160,10 +192,12 @@ button:active{
 <body>
 
 <header>
-💎 Jewellery CAD AI V2.8
+💎 Jewellery CAD AI V2.9
 </header>
 
 <div class="app">
+
+<!-- CONTROLS -->
 
 <div class="controls">
 
@@ -210,19 +244,35 @@ button:active{
 
 <div class="control">
 <label>Size</label>
-<input id="size" type="range" min="45" max="75" value="58">
+<input
+ id="size"
+ type="range"
+ min="45"
+ max="75"
+ value="58">
 <div id="sizeValue">58 mm</div>
 </div>
 
 <div class="control">
 <label>Thickness</label>
-<input id="thickness" type="range" min="2" max="8" step="0.2" value="4">
+<input
+ id="thickness"
+ type="range"
+ min="2"
+ max="8"
+ step="0.2"
+ value="4">
 <div id="thicknessValue">4.0 mm</div>
 </div>
 
 <div class="control">
 <label>Diamond Count</label>
-<input id="diamondCount" type="range" min="4" max="48" value="20">
+<input
+ id="diamondCount"
+ type="range"
+ min="4"
+ max="48"
+ value="20">
 <div id="diamondValue">20</div>
 </div>
 
@@ -237,53 +287,212 @@ button:active{
 
 <div class="control">
 <label>Reference Photo</label>
-<input id="reference" type="file" accept="image/*">
+<input
+ id="reference"
+ type="file"
+ accept="image/*">
 </div>
 
 <div class="control">
-<label>Actions</label>
 
-<div class="small-buttons">
-<button class="primary" id="generate">Generate CAD</button>
-<button id="reset">Reset</button>
+<label>CAD Actions</label>
+
+<div class="two">
+<button
+ class="primary"
+ id="generate">
+Generate CAD
+</button>
+
+<button
+ id="reset">
+Reset
+</button>
 </div>
 
-<div class="small-buttons">
-<button id="stones">Hide Stones</button>
-<button id="home">3D View</button>
+<div class="two">
+
+<button
+ id="stones">
+Hide Stones
+</button>
+
+<button
+ id="home">
+3D View
+</button>
+
 </div>
 
 </div>
 
 <div class="control">
+
 <label>Camera</label>
 
 <div class="buttons">
-<button id="front">Front</button>
-<button id="top">Top</button>
-<button id="threeD">3D</button>
-</div>
+
+<button id="front">
+Front
+</button>
+
+<button id="top">
+Top
+</button>
+
+<button id="threeD">
+3D
+</button>
 
 </div>
 
 </div>
+
+</div>
+
+<!-- REFERENCE -->
 
 <div class="reference">
-<label>Reference Preview</label>
+
+<label>
+Reference Preview
+</label>
+
 <img id="preview">
+
 </div>
+
+<!-- 3D VIEW -->
 
 <div class="viewer">
 
-<div class="status" id="status">
-V2.8 • Live 3D CAD
+<div
+ class="status"
+ id="status">
+
+V2.9 • Live 3D CAD
+
 </div>
 
 <div id="canvas"></div>
 
 </div>
 
+<!-- CAD INFORMATION -->
+
+<div class="infoPanel">
+
+<div class="info">
+
+<div class="infoTitle">
+OUTER DIAMETER
 </div>
+
+<div
+ class="infoValue"
+ id="outerDiameter">
+
+58.0 mm
+
+</div>
+
+</div>
+
+<div class="info">
+
+<div class="infoTitle">
+INNER DIAMETER
+</div>
+
+<div
+ class="infoValue"
+ id="innerDiameter">
+
+54.0 mm
+
+</div>
+
+</div>
+
+<div class="info">
+
+<div class="infoTitle">
+THICKNESS
+</div>
+
+<div
+ class="infoValue"
+ id="infoThickness">
+
+4.0 mm
+
+</div>
+
+</div>
+
+<div class="info">
+
+<div class="infoTitle">
+EST. GOLD WEIGHT
+</div>
+
+<div
+ class="infoValue"
+ id="goldWeight">
+
+—
+
+</div>
+
+</div>
+
+<div class="info">
+
+<div class="infoTitle">
+DIAMOND COUNT
+</div>
+
+<div
+ class="infoValue"
+ id="infoDiamonds">
+
+20
+
+</div>
+
+</div>
+
+<div class="info">
+
+<div class="infoTitle">
+EST. DIAMOND CT
+</div>
+
+<div
+ class="infoValue"
+ id="diamondCarat">
+
+—
+
+</div>
+
+</div>
+
+</div>
+
+<div class="note">
+
+⚠️ Gold weight और diamond carat अभी
+<strong>approximate design estimates</strong> हैं।
+Production/CAD manufacturing के लिए actual
+CAD geometry और material density से final
+weight verify करना जरूरी है।
+
+</div>
+
+</div>
+
+<!-- THREE.JS -->
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 
@@ -301,1103 +510,1350 @@ let stonesGroup;
 
 let showStones=true;
 
-let currentMetal;
-let currentStone;
-
-const canvas=document.getElementById("canvas");
+const canvas=
+document.getElementById("canvas");
 
 const metalColors={
-  yellow:0xd4af37,
-  white:0xd8d8d8,
-  rose:0xe8a09a
+
+yellow:0xd4af37,
+
+white:0xd8d8d8,
+
+rose:0xe8a09a
+
 };
 
 function init(){
 
-  scene=new THREE.Scene();
+scene=
+new THREE.Scene();
 
-  scene.background=new THREE.Color(0x050505);
+scene.background=
+new THREE.Color(0x050505);
 
-  camera=new THREE.PerspectiveCamera(
-    45,
-    canvas.clientWidth/canvas.clientHeight,
-    0.1,
-    1000
-  );
+camera=
+new THREE.PerspectiveCamera(
+45,
+canvas.clientWidth/
+canvas.clientHeight,
+0.1,
+1000
+);
 
-  camera.position.set(0,35,70);
+camera.position.set(
+45,
+35,
+60
+);
 
-  renderer=new THREE.WebGLRenderer({
-    antialias:true
-  });
+renderer=
+new THREE.WebGLRenderer({
+antialias:true
+});
 
-  renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setPixelRatio(
+window.devicePixelRatio
+);
 
-  renderer.setSize(
-    canvas.clientWidth,
-    canvas.clientHeight
-  );
+renderer.setSize(
+canvas.clientWidth,
+canvas.clientHeight
+);
 
-  canvas.appendChild(renderer.domElement);
+canvas.appendChild(
+renderer.domElement
+);
 
-  controls=new THREE.OrbitControls(
-    camera,
-    renderer.domElement
-  );
+controls=
+new THREE.OrbitControls(
+camera,
+renderer.domElement
+);
 
-  controls.enableDamping=true;
+controls.enableDamping=true;
 
-  controls.dampingFactor=.08;
+controls.dampingFactor=.08;
 
-  const ambient=new THREE.AmbientLight(
-    0xffffff,
-    1.5
-  );
+const ambient=
+new THREE.AmbientLight(
+0xffffff,
+1.6
+);
 
-  scene.add(ambient);
+scene.add(ambient);
 
-  const light1=new THREE.DirectionalLight(
-    0xffffff,
-    2
-  );
+const light1=
+new THREE.DirectionalLight(
+0xffffff,
+2
+);
 
-  light1.position.set(40,60,50);
+light1.position.set(
+40,
+60,
+50
+);
 
-  scene.add(light1);
+scene.add(light1);
 
-  const light2=new THREE.DirectionalLight(
-    0xffffff,
-    1.5
-  );
+const light2=
+new THREE.DirectionalLight(
+0xffffff,
+1.3
+);
 
-  light2.position.set(-40,20,-30);
+light2.position.set(
+-40,
+20,
+-30
+);
 
-  scene.add(light2);
+scene.add(light2);
 
-  jewelleryGroup=new THREE.Group();
+jewelleryGroup=
+new THREE.Group();
 
-  stonesGroup=new THREE.Group();
+stonesGroup=
+new THREE.Group();
 
-  jewelleryGroup.add(stonesGroup);
+jewelleryGroup.add(
+stonesGroup
+);
 
-  scene.add(jewelleryGroup);
+scene.add(
+jewelleryGroup
+);
 
-  createJewellery();
+createJewellery();
 
-  animate();
+animate();
+
 }
 
 function getMetal(){
 
-  return metalColors[
-    document.getElementById("metal").value
-  ];
+return metalColors[
+document.getElementById(
+"metal"
+).value
+];
 
 }
 
 function createMaterial(){
 
-  return new THREE.MeshStandardMaterial({
+return new THREE.MeshStandardMaterial({
 
-    color:getMetal(),
+color:getMetal(),
 
-    metalness:.85,
+metalness:.88,
 
-    roughness:.2
+roughness:.19
 
-  });
+});
 
 }
 
 function createDiamond(size){
 
-  let s=0.7;
+let s=.7;
 
-  if(size==="small") s=.45;
+if(size==="small")
+s=.45;
 
-  if(size==="large") s=.9;
+if(size==="large")
+s=.9;
 
-  const geometry=
-    new THREE.OctahedronGeometry(s,1);
+const geometry=
+new THREE.OctahedronGeometry(
+s,
+1
+);
 
-  const material=
-    new THREE.MeshPhysicalMaterial({
+const material=
+new THREE.MeshPhysicalMaterial({
 
-      color:0xffffff,
+color:0xffffff,
 
-      metalness:0,
+metalness:0,
 
-      roughness:.02,
+roughness:.02,
 
-      transmission:.15,
+transparent:true,
 
-      transparent:true,
+opacity:.96
 
-      opacity:.95
+});
 
-    });
+return new THREE.Mesh(
+geometry,
+material
+);
 
-  return new THREE.Mesh(
-    geometry,
-    material
-  );
 }
 
-function addProngs(group,size){
+function addProngs(group){
 
-  const prongMaterial=createMaterial();
+const material=
+createMaterial();
 
-  const positions=[
+const positions=[
 
-    [size,0,0],
-    [-size,0,0],
-    [0,size,0],
-    [0,-size,0]
+[.5,0,0],
 
-  ];
+[-.5,0,0],
 
-  positions.forEach(p=>{
+[0,0,.5],
 
-    const geo=
-      new THREE.CylinderGeometry(
-        .12,
-        .16,
-        .7,
-        8
-      );
+[0,0,-.5]
 
-    const mesh=
-      new THREE.Mesh(
-        geo,
-        prongMaterial
-      );
+];
 
-    mesh.position.set(
-      p[0],
-      p[1],
-      p[2]
-    );
+positions.forEach(p=>{
 
-    group.add(mesh);
+const geo=
+new THREE.CylinderGeometry(
+.12,
+.16,
+.7,
+8
+);
 
-  });
+const mesh=
+new THREE.Mesh(
+geo,
+material
+);
+
+mesh.position.set(
+p[0],
+.35,
+p[2]
+);
+
+group.add(mesh);
+
+});
 
 }
 
 function addDiamondSetting(
-  x,
-  y,
-  z,
-  rotation=0
+x,
+y,
+z,
+rotation
 ){
 
-  const group=new THREE.Group();
+const group=
+new THREE.Group();
 
-  group.position.set(x,y,z);
+group.position.set(
+x,
+y,
+z
+);
 
-  group.rotation.y=rotation;
+group.rotation.y=
+rotation || 0;
 
-  const metal=createMaterial();
+const metal=
+createMaterial();
 
-  const baseGeo=
-    new THREE.CylinderGeometry(
-      .72,
-      .85,
-      .22,
-      24
-    );
+const baseGeo=
+new THREE.CylinderGeometry(
+.72,
+.85,
+.22,
+24
+);
 
-  const base=
-    new THREE.Mesh(
-      baseGeo,
-      metal
-    );
+const base=
+new THREE.Mesh(
+baseGeo,
+metal
+);
 
-  group.add(base);
+group.add(base);
 
-  const diamond=
-    createDiamond(
-      document.getElementById(
-        "diamondSize"
-      ).value
-    );
+const diamond=
+createDiamond(
+document.getElementById(
+"diamondSize"
+).value
+);
 
-  diamond.position.y=.55;
+diamond.position.y=
+.55;
 
-  group.add(diamond);
+group.add(diamond);
 
-  addProngs(group,.5);
+addProngs(group);
 
-  stonesGroup.add(group);
+stonesGroup.add(group);
 
 }
 
 function createBangle(){
 
-  const group=new THREE.Group();
+const group=
+new THREE.Group();
 
-  const size=
-    Number(
-      document.getElementById("size").value
-    );
+const size=
+Number(
+document.getElementById(
+"size"
+).value
+);
 
-  const thickness=
-    Number(
-      document.getElementById("thickness").value
-    );
+const thickness=
+Number(
+document.getElementById(
+"thickness"
+).value
+);
 
-  const count=
-    Number(
-      document.getElementById("diamondCount").value
-    );
+const count=
+Number(
+document.getElementById(
+"diamondCount"
+).value
+);
 
-  const pattern=
-    document.getElementById("pattern").value;
+const pattern=
+document.getElementById(
+"pattern"
+).value;
 
-  const radius=size/2;
+const radius=
+size/2;
 
-  const material=createMaterial();
+const material=
+createMaterial();
 
-  const bodyGeo=
-    new THREE.TorusGeometry(
-      radius,
-      thickness/2,
-      32,
-      160
-    );
+const bodyGeo=
+new THREE.TorusGeometry(
+radius,
+thickness/2,
+32,
+160
+);
 
-  const body=
-    new THREE.Mesh(
-      bodyGeo,
-      material
-    );
+const body=
+new THREE.Mesh(
+bodyGeo,
+material
+);
 
-  body.rotation.x=Math.PI/2;
+body.rotation.x=
+Math.PI/2;
 
-  group.add(body);
+group.add(body);
 
-  if(
-    pattern==="classic" ||
-    pattern==="pave" ||
-    pattern==="floral" ||
-    pattern==="leaf" ||
-    pattern==="oval" ||
-    pattern==="geometric"
-  ){
+createPattern(
+radius,
+thickness,
+count,
+pattern
+);
 
-    createPattern(
-      group,
-      radius,
-      thickness,
-      count,
-      pattern
-    );
-
-  }
-
-  return group;
+return group;
 
 }
 
 function createPattern(
-  group,
-  radius,
-  thickness,
-  count,
-  pattern
+radius,
+thickness,
+count,
+pattern
 ){
 
-  const actualCount=
-    Math.max(
-      4,
-      Math.min(count,48)
-    );
+for(
+let i=0;
+i<count;
+i++
+){
 
-  for(
-    let i=0;
-    i<actualCount;
-    i++
-  ){
+const angle=
+(i/count)*
+Math.PI*2;
 
-    const angle=
-      (i/actualCount)*Math.PI*2;
+const x=
+Math.cos(angle)*
+radius;
 
-    const x=
-      Math.cos(angle)*radius;
+const z=
+Math.sin(angle)*
+radius;
 
-    const z=
-      Math.sin(angle)*radius;
+if(pattern==="classic"){
 
-    if(pattern==="classic"){
+if(i%2===0){
 
-      if(i%2===0){
+addDiamondSetting(
+x,
+thickness*.55,
+z,
+angle
+);
 
-        addDiamondSetting(
-          x,
-          thickness*.5,
-          z,
-          angle
-        );
+}
 
-      }
+}
 
-    }
+else if(pattern==="pave"){
 
-    else if(pattern==="pave"){
+addDiamondSetting(
+x,
+thickness*.58,
+z,
+angle
+);
 
-      addDiamondSetting(
-        x,
-        thickness*.55,
-        z,
-        angle
-      );
+}
 
-    }
+else if(pattern==="floral"){
 
-    else if(pattern==="floral"){
+createFlower(
+x,
+thickness*.6,
+z,
+angle
+);
 
-      createFlower(
-        x,
-        thickness*.6,
-        z,
-        angle,
-        radius
-      );
+}
 
-    }
+else if(pattern==="leaf"){
 
-    else if(pattern==="leaf"){
+createLeaf(
+x,
+thickness*.6,
+z,
+angle
+);
 
-      createLeaf(
-        x,
-        thickness*.6,
-        z,
-        angle
-      );
+}
 
-    }
+else if(pattern==="oval"){
 
-    else if(pattern==="oval"){
+createOval(
+x,
+thickness*.6,
+z,
+angle
+);
 
-      createOval(
-        x,
-        thickness*.55,
-        z,
-        angle
-      );
+}
 
-    }
+else if(pattern==="geometric"){
 
-    else if(pattern==="geometric"){
+createGeometric(
+x,
+thickness*.6,
+z,
+angle,
+i
+);
 
-      createGeometric(
-        x,
-        thickness*.55,
-        z,
-        angle,
-        i
-      );
+}
 
-    }
-
-  }
+}
 
 }
 
 function createFlower(
-  x,
-  y,
-  z,
-  angle,
-  radius
+x,y,z,angle
 ){
 
-  const flower=
-    new THREE.Group();
+const group=
+new THREE.Group();
 
-  flower.position.set(
-    x,y,z
-  );
+group.position.set(
+x,y,z
+);
 
-  flower.rotation.y=-angle;
+group.rotation.y=
+-angle;
 
-  const metal=createMaterial();
+const metal=
+createMaterial();
 
-  for(let p=0;p<4;p++){
+for(
+let p=0;
+p<4;
+p++
+){
 
-    const a=
-      (p/4)*Math.PI*2;
+const a=
+p/4*
+Math.PI*2;
 
-    const petalGeo=
-      new THREE.SphereGeometry(
-        .7,
-        16,
-        10
-      );
+const geo=
+new THREE.SphereGeometry(
+.7,
+16,
+10
+);
 
-    const petal=
-      new THREE.Mesh(
-        petalGeo,
-        metal
-      );
+const petal=
+new THREE.Mesh(
+geo,
+metal
+);
 
-    petal.scale.set(
-      .65,
-      .25,
-      1
-    );
+petal.scale.set(
+.65,
+.25,
+1
+);
 
-    petal.position.set(
-      Math.cos(a)*.65,
-      0,
-      Math.sin(a)*.65
-    );
+petal.position.set(
+Math.cos(a)*.65,
+0,
+Math.sin(a)*.65
+);
 
-    flower.add(petal);
+group.add(petal);
 
-  }
+}
 
-  const center=
-    createDiamond(
-      document.getElementById(
-        "diamondSize"
-      ).value
-    );
+const center=
+createDiamond(
+document.getElementById(
+"diamondSize"
+).value
+);
 
-  center.scale.multiplyScalar(.65);
+center.scale.multiplyScalar(
+.65
+);
 
-  center.position.y=.35;
+center.position.y=
+.35;
 
-  flower.add(center);
+group.add(center);
 
-  addProngs(
-    flower,
-    .32
-  );
-
-  stonesGroup.add(flower);
+stonesGroup.add(group);
 
 }
 
 function createLeaf(
-  x,
-  y,
-  z,
-  angle
+x,y,z,angle
 ){
 
-  const group=
-    new THREE.Group();
+const group=
+new THREE.Group();
 
-  group.position.set(
-    x,y,z
-  );
+group.position.set(
+x,y,z
+);
 
-  group.rotation.y=-angle;
+group.rotation.y=
+-angle;
 
-  const metal=createMaterial();
+const metal=
+createMaterial();
 
-  const leafGeo=
-    new THREE.SphereGeometry(
-      1,
-      20,
-      12
-    );
+const geo=
+new THREE.SphereGeometry(
+1,
+20,
+12
+);
 
-  const leaf=
-    new THREE.Mesh(
-      leafGeo,
-      metal
-    );
+const leaf=
+new THREE.Mesh(
+geo,
+metal
+);
 
-  leaf.scale.set(
-    .45,
-    .18,
-    1.15
-  );
+leaf.scale.set(
+.45,
+.18,
+1.15
+);
 
-  group.add(leaf);
+group.add(leaf);
 
-  const diamond=
-    createDiamond(
-      document.getElementById(
-        "diamondSize"
-      ).value
-    );
+const diamond=
+createDiamond(
+document.getElementById(
+"diamondSize"
+).value
+);
 
-  diamond.scale.multiplyScalar(.55);
+diamond.scale.multiplyScalar(
+.55
+);
 
-  diamond.position.y=.35;
+diamond.position.y=
+.35;
 
-  group.add(diamond);
+group.add(diamond);
 
-  stonesGroup.add(group);
+stonesGroup.add(group);
 
 }
 
 function createOval(
-  x,
-  y,
-  z,
-  angle
+x,y,z,angle
 ){
 
-  const group=
-    new THREE.Group();
+const group=
+new THREE.Group();
 
-  group.position.set(
-    x,y,z
-  );
+group.position.set(
+x,y,z
+);
 
-  group.rotation.y=-angle;
+group.rotation.y=
+-angle;
 
-  const metal=createMaterial();
+const metal=
+createMaterial();
 
-  const geo=
-    new THREE.TorusGeometry(
-      .9,
-      .18,
-      12,
-      32
-    );
+const geo=
+new THREE.TorusGeometry(
+.9,
+.18,
+12,
+32
+);
 
-  const oval=
-    new THREE.Mesh(
-      geo,
-      metal
-    );
+const oval=
+new THREE.Mesh(
+geo,
+metal
+);
 
-  oval.scale.set(
-    .65,
-    1,
-    1.25
-  );
+oval.scale.set(
+.65,
+1,
+1.25
+);
 
-  group.add(oval);
+group.add(oval);
 
-  const diamond=
-    createDiamond(
-      document.getElementById(
-        "diamondSize"
-      ).value
-    );
+const diamond=
+createDiamond(
+document.getElementById(
+"diamondSize"
+).value
+);
 
-  diamond.scale.multiplyScalar(.6);
+diamond.scale.multiplyScalar(
+.6
+);
 
-  diamond.position.y=.35;
+diamond.position.y=
+.35;
 
-  group.add(diamond);
+group.add(diamond);
 
-  stonesGroup.add(group);
+stonesGroup.add(group);
 
 }
 
 function createGeometric(
-  x,
-  y,
-  z,
-  angle,
-  index
+x,y,z,angle,index
 ){
 
-  const group=
-    new THREE.Group();
+const group=
+new THREE.Group();
 
-  group.position.set(
-    x,y,z
-  );
+group.position.set(
+x,y,z
+);
 
-  group.rotation.y=-angle;
+group.rotation.y=
+-angle;
 
-  const metal=createMaterial();
+const metal=
+createMaterial();
 
-  const geo=
-    new THREE.BoxGeometry(
-      1.1,
-      .35,
-      .55
-    );
+const geo=
+new THREE.BoxGeometry(
+1.1,
+.35,
+.55
+);
 
-  const bar=
-    new THREE.Mesh(
-      geo,
-      metal
-    );
+const bar=
+new THREE.Mesh(
+geo,
+metal
+);
 
-  bar.rotation.y=
-    index%2===0 ? .5 : -.5;
+bar.rotation.y=
+index%2===0
+? .5
+: -.5;
 
-  group.add(bar);
+group.add(bar);
 
-  if(index%2===0){
+if(index%2===0){
 
-    const diamond=
-      createDiamond(
-        document.getElementById(
-          "diamondSize"
-        ).value
-      );
+const diamond=
+createDiamond(
+document.getElementById(
+"diamondSize"
+).value
+);
 
-    diamond.scale.multiplyScalar(.55);
+diamond.scale.multiplyScalar(
+.55
+);
 
-    diamond.position.y=.4;
+diamond.position.y=
+.4;
 
-    group.add(diamond);
+group.add(diamond);
 
-  }
+}
 
-  stonesGroup.add(group);
+stonesGroup.add(group);
 
 }
 
 function createRing(){
 
-  const group=new THREE.Group();
+const group=
+new THREE.Group();
 
-  const thickness=
-    Number(
-      document.getElementById("thickness").value
-    );
+const thickness=
+Number(
+document.getElementById(
+"thickness"
+).value
+);
 
-  const material=createMaterial();
+const material=
+createMaterial();
 
-  const geo=
-    new THREE.TorusGeometry(
-      20,
-      thickness/2,
-      32,
-      100
-    );
+const geo=
+new THREE.TorusGeometry(
+20,
+thickness/2,
+32,
+100
+);
 
-  const ring=
-    new THREE.Mesh(
-      geo,
-      material
-    );
+const ring=
+new THREE.Mesh(
+geo,
+material
+);
 
-  ring.rotation.x=Math.PI/2;
+ring.rotation.x=
+Math.PI/2;
 
-  group.add(ring);
+group.add(ring);
 
-  for(let i=0;i<12;i++){
+for(
+let i=0;
+i<12;
+i++
+){
 
-    const a=
-      i/12*Math.PI*2;
+const a=
+i/12*
+Math.PI*2;
 
-    addDiamondSetting(
-      Math.cos(a)*20,
-      thickness*.6,
-      Math.sin(a)*20,
-      a
-    );
+addDiamondSetting(
+Math.cos(a)*20,
+thickness*.6,
+Math.sin(a)*20,
+a
+);
 
-  }
+}
 
-  return group;
+return group;
 
 }
 
 function createBracelet(){
 
-  const group=
-    createBangle();
+const group=
+createBangle();
 
-  group.scale.set(
-    1.18,
-    1,
-    1
-  );
+group.scale.set(
+1.18,
+1,
+1
+);
 
-  return group;
+return group;
 
 }
 
 function createNecklace(){
 
-  const group=new THREE.Group();
+const group=
+new THREE.Group();
 
-  const material=createMaterial();
+const material=
+createMaterial();
 
-  const geo=
-    new THREE.TorusGeometry(
-      28,
-      1.8,
-      24,
-      140,
-      Math.PI*1.6
-    );
+const geo=
+new THREE.TorusGeometry(
+28,
+1.8,
+24,
+140,
+Math.PI*1.6
+);
 
-  const mesh=
-    new THREE.Mesh(
-      geo,
-      material
-    );
+const mesh=
+new THREE.Mesh(
+geo,
+material
+);
 
-  mesh.rotation.x=Math.PI/2;
+mesh.rotation.x=
+Math.PI/2;
 
-  group.add(mesh);
+group.add(mesh);
 
-  return group;
+return group;
 
 }
 
 function createEarring(){
 
-  const group=new THREE.Group();
+const group=
+new THREE.Group();
 
-  const material=createMaterial();
+const material=
+createMaterial();
 
-  const geo=
-    new THREE.TorusGeometry(
-      14,
-      2,
-      24,
-      80
-    );
+const geo=
+new THREE.TorusGeometry(
+14,
+2,
+24,
+80
+);
 
-  const mesh=
-    new THREE.Mesh(
-      geo,
-      material
-    );
+const mesh=
+new THREE.Mesh(
+geo,
+material
+);
 
-  mesh.rotation.x=Math.PI/2;
+mesh.rotation.x=
+Math.PI/2;
 
-  group.add(mesh);
+group.add(mesh);
 
-  addDiamondSetting(
-    0,
-    2.5,
-    14,
-    0
-  );
-
-  return group;
+return group;
 
 }
 
 function createJewellery(){
 
-  while(
-    jewelleryGroup.children.length
-  ){
+while(
+jewelleryGroup.children.length
+){
 
-    jewelleryGroup.remove(
-      jewelleryGroup.children[0]
-    );
-
-  }
-
-  stonesGroup=
-    new THREE.Group();
-
-  jewelleryGroup.add(
-    stonesGroup
-  );
-
-  const type=
-    document.getElementById(
-      "jewelleryType"
-    ).value;
-
-  if(type==="bangle"){
-
-    jewelleryGroup.add(
-      createBangle()
-    );
-
-  }
-
-  else if(type==="ring"){
-
-    jewelleryGroup.add(
-      createRing()
-    );
-
-  }
-
-  else if(type==="bracelet"){
-
-    jewelleryGroup.add(
-      createBracelet()
-    );
-
-  }
-
-  else if(type==="necklace"){
-
-    jewelleryGroup.add(
-      createNecklace()
-    );
-
-  }
-
-  else if(type==="earring"){
-
-    jewelleryGroup.add(
-      createEarring()
-    );
-
-  }
-
-  stonesGroup.visible=
-    showStones;
-
-  controls.target.set(
-    0,0,0
-  );
+jewelleryGroup.remove(
+jewelleryGroup.children[0]
+);
 
 }
 
-function updateValues(){
+stonesGroup=
+new THREE.Group();
 
-  document.getElementById(
-    "sizeValue"
-  ).innerText=
-    document.getElementById(
-      "size"
-    ).value+" mm";
+jewelleryGroup.add(
+stonesGroup
+);
 
-  document.getElementById(
-    "thicknessValue"
-  ).innerText=
-    Number(
-      document.getElementById(
-        "thickness"
-      ).value
-    ).toFixed(1)+" mm";
+const type=
+document.getElementById(
+"jewelleryType"
+).value;
 
-  document.getElementById(
-    "diamondValue"
-  ).innerText=
-    document.getElementById(
-      "diamondCount"
-    ).value;
+if(type==="bangle"){
+
+jewelleryGroup.add(
+createBangle()
+);
+
+}
+
+else if(type==="ring"){
+
+jewelleryGroup.add(
+createRing()
+);
+
+}
+
+else if(type==="bracelet"){
+
+jewelleryGroup.add(
+createBracelet()
+);
+
+}
+
+else if(type==="necklace"){
+
+jewelleryGroup.add(
+createNecklace()
+);
+
+}
+
+else if(type==="earring"){
+
+jewelleryGroup.add(
+createEarring()
+);
+
+}
+
+stonesGroup.visible=
+showStones;
+
+}
+
+function updateInfo(){
+
+const size=
+Number(
+document.getElementById(
+"size"
+).value
+);
+
+const thickness=
+Number(
+document.getElementById(
+"thickness"
+).value
+);
+
+const count=
+Number(
+document.getElementById(
+"diamondCount"
+).value
+);
+
+const outer=
+size;
+
+const inner=
+Math.max(
+1,
+size-thickness
+);
+
+document.getElementById(
+"sizeValue"
+).innerText=
+size+" mm";
+
+document.getElementById(
+"thicknessValue"
+).innerText=
+thickness.toFixed(1)+" mm";
+
+document.getElementById(
+"diamondValue"
+).innerText=
+count;
+
+document.getElementById(
+"outerDiameter"
+).innerText=
+outer.toFixed(1)+" mm";
+
+document.getElementById(
+"innerDiameter"
+).innerText=
+inner.toFixed(1)+" mm";
+
+document.getElementById(
+"infoThickness"
+).innerText=
+thickness.toFixed(1)+" mm";
+
+document.getElementById(
+"infoDiamonds"
+).innerText=
+count;
+
+calculateWeight(
+size,
+thickness,
+count
+);
+
+}
+
+function calculateWeight(
+size,
+thickness,
+count
+){
+
+/*
+
+Approximate torus volume.
+
+This is NOT production weight.
+
+*/
+
+const R=
+(size-thickness)/2;
+
+const r=
+thickness/2;
+
+const volume=
+2*
+Math.PI*
+Math.PI*
+R*
+r*
+r;
+
+/*
+
+Gold density approximation:
+19.3 g/cm3
+
+mm3 to cm3:
+divide by 1000
+
+*/
+
+const density=
+19.3;
+
+const gold=
+volume/1000*
+density;
+
+const pattern=
+document.getElementById(
+"pattern"
+).value;
+
+let factor=1;
+
+if(pattern==="pave")
+factor=.92;
+
+if(pattern==="floral")
+factor=.90;
+
+if(pattern==="leaf")
+factor=.91;
+
+if(pattern==="oval")
+factor=.93;
+
+if(pattern==="geometric")
+factor=.94;
+
+const estimatedGold=
+gold*factor;
+
+document.getElementById(
+"goldWeight"
+).innerText=
+estimatedGold.toFixed(2)+" g";
+
+/*
+
+Very rough diamond estimate.
+
+*/
+
+let ct=.02;
+
+const ds=
+document.getElementById(
+"diamondSize"
+).value;
+
+if(ds==="small")
+ct=.008;
+
+if(ds==="medium")
+ct=.015;
+
+if(ds==="large")
+ct=.03;
+
+if(
+document.getElementById(
+"stone"
+).value==="none"
+){
+
+ct=0;
+
+}
+
+const totalCt=
+count*ct;
+
+document.getElementById(
+"diamondCarat"
+).innerText=
+totalCt.toFixed(2)+" ct";
 
 }
 
 function update(){
 
-  updateValues();
+updateInfo();
 
-  createJewellery();
+createJewellery();
 
 }
 
 document.querySelectorAll(
-  "select,input[type=range]"
-).forEach(el=>{
+"select,input[type=range]"
+).forEach(
+function(el){
 
-  el.addEventListener(
-    "input",
-    update
-  );
+el.addEventListener(
+"input",
+update
+);
 
-  el.addEventListener(
-    "change",
-    update
-  );
+el.addEventListener(
+"change",
+update
+);
 
-});
+}
+);
 
 document.getElementById(
-  "generate"
-).onclick=function(){
+"generate"
+).onclick=
+function(){
 
-  update();
+update();
 
-  document.getElementById(
-    "status"
-  ).innerText=
-    "V2.8 • CAD Generated";
+document.getElementById(
+"status"
+).innerText=
+"V2.9 • CAD Generated";
 
 };
 
 document.getElementById(
-  "stones"
-).onclick=function(){
+"stones"
+).onclick=
+function(){
 
-  showStones=!showStones;
+showStones=
+!showStones;
 
-  stonesGroup.visible=
-    showStones;
+stonesGroup.visible=
+showStones;
 
-  this.innerText=
-    showStones
-    ? "Hide Stones"
-    : "Show Stones";
-
-};
-
-document.getElementById(
-  "reset"
-).onclick=function(){
-
-  document.getElementById(
-    "size"
-  ).value=58;
-
-  document.getElementById(
-    "thickness"
-  ).value=4;
-
-  document.getElementById(
-    "diamondCount"
-  ).value=20;
-
-  document.getElementById(
-    "diamondSize"
-  ).value="medium";
-
-  document.getElementById(
-    "metal"
-  ).value="yellow";
-
-  document.getElementById(
-    "pattern"
-  ).value="classic";
-
-  document.getElementById(
-    "jewelleryType"
-  ).value="bangle";
-
-  showStones=true;
-
-  document.getElementById(
-    "stones"
-  ).innerText="Hide Stones";
-
-  update();
-
-  camera.position.set(
-    0,35,70
-  );
-
-  controls.target.set(
-    0,0,0
-  );
+this.innerText=
+showStones
+? "Hide Stones"
+: "Show Stones";
 
 };
 
 document.getElementById(
-  "front"
-).onclick=function(){
+"reset"
+).onclick=
+function(){
 
-  camera.position.set(
-    0,0,90
-  );
+document.getElementById(
+"size"
+).value=58;
 
-  controls.target.set(
-    0,0,0
-  );
+document.getElementById(
+"thickness"
+).value=4;
+
+document.getElementById(
+"diamondCount"
+).value=20;
+
+document.getElementById(
+"diamondSize"
+).value="medium";
+
+document.getElementById(
+"metal"
+).value="yellow";
+
+document.getElementById(
+"pattern"
+).value="classic";
+
+document.getElementById(
+"jewelleryType"
+).value="bangle";
+
+document.getElementById(
+"stone"
+).value="diamond";
+
+showStones=true;
+
+document.getElementById(
+"stones"
+).innerText=
+"Hide Stones";
+
+update();
+
+camera.position.set(
+45,35,60
+);
+
+controls.target.set(
+0,0,0
+);
 
 };
 
 document.getElementById(
-  "top"
-).onclick=function(){
+"front"
+).onclick=
+function(){
 
-  camera.position.set(
-    0,90,0
-  );
+camera.position.set(
+0,0,90
+);
 
-  controls.target.set(
-    0,0,0
-  );
-
-};
-
-document.getElementById(
-  "threeD"
-).onclick=function(){
-
-  camera.position.set(
-    45,35,55
-  );
-
-  controls.target.set(
-    0,0,0
-  );
+controls.target.set(
+0,0,0
+);
 
 };
 
 document.getElementById(
-  "home"
-).onclick=function(){
+"top"
+).onclick=
+function(){
 
-  camera.position.set(
-    45,35,55
-  );
+camera.position.set(
+0,90,0
+);
 
-  controls.target.set(
-    0,0,0
-  );
+controls.target.set(
+0,0,0
+);
 
 };
 
 document.getElementById(
-  "reference"
+"threeD"
+).onclick=
+function(){
+
+camera.position.set(
+45,35,60
+);
+
+controls.target.set(
+0,0,0
+);
+
+};
+
+document.getElementById(
+"home"
+).onclick=
+function(){
+
+camera.position.set(
+45,35,60
+);
+
+controls.target.set(
+0,0,0
+);
+
+};
+
+document.getElementById(
+"reference"
 ).addEventListener(
-  "change",
-  function(){
+"change",
+function(){
 
-    const file=this.files[0];
+const file=
+this.files[0];
 
-    if(!file)return;
+if(!file)return;
 
-    const reader=
-      new FileReader();
+const reader=
+new FileReader();
 
-    reader.onload=function(e){
+reader.onload=
+function(e){
 
-      const img=
-        document.getElementById(
-          "preview"
-        );
+const img=
+document.getElementById(
+"preview"
+);
 
-      img.src=e.target.result;
+img.src=
+e.target.result;
 
-      img.style.display="block";
+img.style.display=
+"block";
 
-    };
+};
 
-    reader.readAsDataURL(file);
+reader.readAsDataURL(
+file
+);
 
-  }
+}
 );
 
 window.addEventListener(
-  "resize",
-  function(){
+"resize",
+function(){
 
-    camera.aspect=
-      canvas.clientWidth/
-      canvas.clientHeight;
+camera.aspect=
+canvas.clientWidth/
+canvas.clientHeight;
 
-    camera.updateProjectionMatrix();
+camera.updateProjectionMatrix();
 
-    renderer.setSize(
-      canvas.clientWidth,
-      canvas.clientHeight
-    );
+renderer.setSize(
+canvas.clientWidth,
+canvas.clientHeight
+);
 
-  }
+}
 );
 
 function animate(){
 
-  requestAnimationFrame(
-    animate
-  );
+requestAnimationFrame(
+animate
+);
 
-  controls.update();
+controls.update();
 
-  jewelleryGroup.rotation.y+=0.0015;
+jewelleryGroup.rotation.y+=
+0.0015;
 
-  renderer.render(
-    scene,
-    camera
-  );
+renderer.render(
+scene,
+camera
+);
 
 }
 
